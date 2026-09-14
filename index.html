@@ -1,0 +1,1099 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>思考法タイプ診断</title>
+<meta name="description" content="性格ではなく「思考のクセ」を測る36問の診断。4文字コードと8つの思考法の順位が返ります。">
+<link rel="canonical" href="https://shoichiiriya.github.io/thinking-type-shindan/">
+<!-- リンクを配ったときにタイトルと説明が出る。画像は無いので summary（小カード）。 -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="思考法タイプ診断">
+<meta property="og:description" content="性格ではなく「考えるときのクセ」を測る36問。4文字コードと8つの思考法の順位が返ります。登録不要・約5分。">
+<meta property="og:url" content="https://shoichiiriya.github.io/thinking-type-shindan/">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A7%AD%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@400;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --paper:#F1F2EE; --surface:#FAFAF8; --ink:#16191A; --ink-2:#545B59; --ink-3:#7C837F;
+  --rule:#D5D8D1; --rule-soft:#E3E5DF;
+  --pole-a:#11615E; --pole-b:#A4443A;
+  --pole-a-wash:#11615E14; --pole-b-wash:#A4443A14;
+  --flag:#8A6B10;
+  --display:"Zen Old Mincho",ui-serif,Georgia,"Yu Mincho","Hiragino Mincho ProN",serif;
+  --body:"Zen Kaku Gothic New",ui-sans-serif,system-ui,"Hiragino Sans","Yu Gothic",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#131615; --surface:#1A1E1C; --ink:#E9EBE5; --ink-2:#98A19D; --ink-3:#79827E;
+    --rule:#2A2E2C; --rule-soft:#222624;
+    --pole-a:#57B8B2; --pole-b:#DD8F80;
+    --pole-a-wash:#57B8B21F; --pole-b-wash:#DD8F801F; --flag:#D6B14E;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#131615; --surface:#1A1E1C; --ink:#E9EBE5; --ink-2:#98A19D; --ink-3:#79827E;
+  --rule:#2A2E2C; --rule-soft:#222624;
+  --pole-a:#57B8B2; --pole-b:#DD8F80;
+  --pole-a-wash:#57B8B21F; --pole-b-wash:#DD8F801F; --flag:#D6B14E;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.85;
+  margin:0;padding-inline:20px;padding-block:0;-webkit-font-smoothing:antialiased}
+img{max-width:100%}
+[hidden]{display:none!important}
+.wrap{max-width:720px;margin:0 auto;padding-block:48px 88px}
+h1{font-family:var(--display);font-weight:900;font-size:clamp(30px,7vw,46px);line-height:1.2;margin:0;letter-spacing:.01em;text-wrap:balance}
+h2{font-family:var(--display);font-weight:700;font-size:clamp(18px,3.4vw,22px);line-height:1.35;margin:0}
+h3{font-family:var(--body);font-weight:700;font-size:14px;margin:26px 0 8px;letter-spacing:.04em;color:var(--ink-2)}
+p{margin:0 0 14px;max-width:66ch}
+a{color:var(--pole-a)}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--pole-a);outline-offset:3px}
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3)}
+.mono{font-family:var(--mono)}
+.tcode{font-family:var(--mono);font-weight:600;letter-spacing:.12em;white-space:nowrap}
+.tcode .pa{color:var(--pole-a)}
+.tcode .pb{color:var(--pole-b)}
+.note{font-size:12.5px;color:var(--ink-3);line-height:1.7;max-width:64ch}
+
+/* ---- buttons ---- */
+.btn{font-family:var(--body);font-weight:700;font-size:15px;background:var(--ink);color:var(--paper);
+  border:1px solid var(--ink);border-radius:2px;padding:13px 26px;cursor:pointer;line-height:1.4}
+.btn:hover{opacity:.86}
+.btn.ghost{background:transparent;color:var(--ink-2);border-color:var(--rule);font-weight:500}
+.btn.sm{font-size:13px;padding:8px 14px}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* ---- intro ---- */
+.mast{border-bottom:2px solid var(--ink);padding-bottom:20px;display:flex;flex-direction:column;gap:12px}
+.standfirst{font-size:16px;color:var(--ink-2);margin:0;max-width:58ch}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--rule);background:var(--surface);margin:26px 0}
+.fact{padding:12px 15px;border-right:1px solid var(--rule);display:flex;flex-direction:column;gap:1px}
+.fact:last-child{border-right:none}
+.fact-k{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.fact-v{font-family:var(--display);font-weight:700;font-size:15px}
+.axis-brief{border-top:1px solid var(--rule)}
+.ab{border-bottom:1px solid var(--rule);padding:11px 0;display:grid;grid-template-columns:70px 1fr;gap:12px;align-items:baseline}
+.ab-c{font-family:var(--mono);font-size:15px;font-weight:600;letter-spacing:.08em}
+.ab-c .pa{color:var(--pole-a)}
+.ab-c .pb{color:var(--pole-b)}
+.ab-t{font-size:13.5px;color:var(--ink-2)}
+.ab-t b{color:var(--ink);font-weight:700}
+
+/* ---- quiz ---- */
+.bar{position:sticky;top:0;background:var(--paper);padding-block:14px 10px;z-index:5;border-bottom:1px solid var(--rule-soft)}
+.bar-top{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--mono);font-size:11.5px;color:var(--ink-3);letter-spacing:.06em;margin-bottom:7px}
+.track{height:3px;background:var(--rule-soft);border-radius:2px;overflow:hidden}
+.fill{height:100%;background:var(--pole-a);width:0%;transition:width .22s ease}
+.qbox{min-height:150px;display:flex;align-items:center;margin:38px 0 22px}
+.qtext{font-family:var(--display);font-size:clamp(19px,4.2vw,25px);line-height:1.65;font-weight:700;margin:0;text-wrap:balance}
+.likert{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:10px}
+.lk{appearance:none;border:1px solid var(--rule);background:var(--surface);border-radius:2px;cursor:pointer;
+  padding:0;height:56px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);
+  font-size:13px;color:var(--ink-3);transition:background .12s,border-color .12s,color .12s}
+.lk[data-side="b"]{color:var(--pole-b)}
+.lk[data-side="a"]{color:var(--pole-a)}
+.lk:hover{border-color:currentColor}
+.lk[aria-pressed="true"]{background:currentColor;border-color:currentColor}
+.lk .dot{width:var(--d);height:var(--d);border-radius:50%;border:1.5px solid currentColor}
+.lk[aria-pressed="true"] .dot{background:var(--paper);border-color:var(--paper)}
+.lk-ends{display:grid;grid-template-columns:1fr auto 1fr;gap:6px;font-size:11.5px;color:var(--ink-3);margin-bottom:26px}
+.lk-ends span:nth-child(2){text-align:center}
+.lk-ends span:nth-child(3){text-align:right}
+/* 中立は「一番小さい丸」だと弱い選択肢に見える（奏が36問で中央を0回選んだ）。横棒にして中立と読ませる */
+.lk .dot.neutral{width:16px;height:2px;border-radius:1px;background:currentColor;border:none}
+.qnav{display:flex;gap:10px;align-items:center}
+.hint{font-size:12.5px;color:var(--ink-3);margin-left:auto;font-family:var(--mono)}
+
+/* ---- result ---- */
+.rcode{font-family:var(--mono);font-size:clamp(38px,11vw,68px);font-weight:600;letter-spacing:.1em;line-height:1.1;margin:0}
+.rcode .pa{color:var(--pole-a)}
+.rcode .pb{color:var(--pole-b)}
+.rname{font-family:var(--display);font-weight:900;font-size:clamp(26px,6vw,38px);margin:6px 0 4px}
+.rmove{font-size:15px;color:var(--ink-2);margin:0 0 4px;max-width:60ch}
+.border-flag{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--flag);
+  border:1px solid var(--flag);border-radius:99px;padding:1px 9px;margin-top:8px}
+.scales{border-top:1px solid var(--rule);margin-top:6px}
+.sc{border-bottom:1px solid var(--rule-soft);padding:10px 0;display:grid;grid-template-columns:26px 88px 1fr 44px;gap:10px;align-items:center}
+.sc-r{font-family:var(--mono);font-size:11.5px;color:var(--ink-3)}
+.sc-n{font-family:var(--display);font-weight:700;font-size:14px;display:flex;gap:7px;align-items:baseline}
+.sc-n .c{font-family:var(--mono);font-size:13px;font-weight:600}
+.sc-bar{height:8px;background:var(--rule-soft);border-radius:2px;overflow:hidden}
+.sc-bar i{display:block;height:100%;border-radius:2px}
+.sc-v{font-family:var(--mono);font-size:13px;text-align:right;font-variant-numeric:tabular-nums;color:var(--ink-2)}
+.sc-desc{grid-column:1/-1;font-size:13px;line-height:1.75;color:var(--ink-2);margin-top:2px}
+.scene{border-top:1px solid var(--rule-soft);padding:13px 0}
+.scene:first-child{border-top:1px solid var(--rule)}
+.scene-k{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--ink-3);margin-bottom:5px}
+.scene p{margin:0;font-size:14.5px;line-height:1.85}
+.people{border-top:1px solid var(--rule)}
+.pp{border-bottom:1px solid var(--rule-soft);padding:12px 0}
+.pp-n{font-family:var(--display);font-weight:700;font-size:15.5px}
+.pp-d{font-size:13px;color:var(--ink-2);line-height:1.75;margin-top:3px}
+.rbody{margin:14px 0 0;max-width:62ch}
+.rbody p{margin:0 0 10px;font-size:14.5px;line-height:1.8}
+.rbody p:last-child{margin-bottom:0}
+.sc.a .sc-n,.sc.a .sc-n .c{color:var(--pole-a)}
+.sc.b .sc-n,.sc.b .sc-n .c{color:var(--pole-b)}
+.card{border:1px solid var(--rule);background:var(--surface);padding:16px 18px;margin:0 0 14px}
+.card-h{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:8px}
+.card p:last-child,.card ul:last-child{margin-bottom:0}
+.card ul{margin:0;padding-left:1.2em}
+.card li{margin-bottom:5px}
+.card li::marker{color:var(--ink-3)}
+.tension{display:flex;align-items:baseline;gap:12px;margin-bottom:10px}
+.tension-n{font-family:var(--display);font-size:44px;font-weight:900;line-height:1;color:var(--pole-b)}
+.tension-l{font-size:13.5px;color:var(--ink-2)}
+.rel{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.rel-c{border:1px solid var(--rule);background:var(--surface);padding:14px 16px}
+.rel-k{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.rel-v{font-family:var(--display);font-weight:700;font-size:17px;margin-top:3px}
+.rel-d{font-size:12.5px;color:var(--ink-2);line-height:1.6;margin-top:3px}
+.share{display:flex;flex-wrap:wrap;gap:9px;margin:10px 0 0}
+.mbti{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.mbti input{font-family:var(--mono);font-size:15px;letter-spacing:.12em;text-transform:uppercase;width:110px;
+  padding:9px 11px;border:1px solid var(--rule);background:var(--paper);color:var(--ink);border-radius:2px}
+.sharetext{font-family:var(--mono);font-size:12.5px;color:var(--ink-2);background:var(--rule-soft);
+  padding:11px 13px;border-radius:2px;white-space:pre-wrap;word-break:break-all;margin:10px 0 0;line-height:1.7}
+footer{margin-top:56px;border-top:2px solid var(--ink);padding-top:14px;font-family:var(--mono);font-size:11px;
+  color:var(--ink-3);display:flex;flex-wrap:wrap;gap:6px 18px}
+/* 16タイプの索引（トップ）とタイプ単独ページ */
+.tlookup{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:14px 0 18px}
+.tlookup input{font-family:var(--mono);font-size:15px;letter-spacing:.12em;text-transform:uppercase;width:130px;
+  padding:9px 11px;border:1px solid var(--rule);background:var(--paper);color:var(--ink);border-radius:2px}
+.tgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule)}
+.tchip{appearance:none;background:var(--surface);border:none;cursor:pointer;padding:10px 8px;text-align:left;
+  display:flex;flex-direction:column;gap:2px;color:var(--ink);font-family:var(--body)}
+.tchip:hover{background:var(--paper)}
+.tchip .tc-c{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.08em}
+.tchip .tc-n{font-family:var(--display);font-weight:700;font-size:13px}
+.tnav{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+.axrow{border-bottom:1px solid var(--rule-soft);padding:12px 0}
+.axrow:first-child{border-top:1px solid var(--rule)}
+.axrow-h{display:flex;gap:9px;align-items:baseline;margin-bottom:4px}
+.axrow-h .c{font-family:var(--mono);font-size:14px;font-weight:600}
+.axrow-h .n{font-family:var(--display);font-weight:700;font-size:14.5px}
+.axrow-h .ax{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:var(--ink-3);margin-left:auto}
+.axrow p{margin:0;font-size:13.5px;line-height:1.8;color:var(--ink-2)}
+.axrow .bl{margin-top:4px;font-size:12.5px;color:var(--ink-3)}
+.axrow.a .axrow-h .c,.axrow.a .axrow-h .n{color:var(--pole-a)}
+.axrow.b .axrow-h .c,.axrow.b .axrow-h .n{color:var(--pole-b)}
+.tlink{appearance:none;background:none;border:none;padding:0;cursor:pointer;color:inherit;font:inherit;
+  text-align:left;border-bottom:1px solid var(--rule)}
+.tlink:hover{border-bottom-color:var(--ink)}
+.nb{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--rule);border:1px solid var(--rule)}
+.nb-c{background:var(--surface);padding:13px 15px}
+.nb-k{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:var(--ink-3)}
+.nb-v{font-family:var(--display);font-weight:700;font-size:16px;margin-top:3px}
+.nb-d{font-size:12.5px;color:var(--ink-2);line-height:1.6;margin-top:3px}
+@media (max-width:560px){
+  .facts{grid-template-columns:1fr 1fr}
+  .fact:nth-child(2){border-right:none}
+  .fact:nth-child(3){border-top:1px solid var(--rule);grid-column:1/-1}
+  .likert{gap:4px}
+  .lk{height:50px}
+  .sc{grid-template-columns:22px 1fr 40px;row-gap:5px}
+  .sc-r,.sc-n,.sc-v{grid-row:1}
+  .sc-bar{grid-column:1/-1;grid-row:2}
+  .sc-desc{grid-row:3}
+  .rel{grid-template-columns:1fr}
+  .ab{grid-template-columns:1fr;gap:2px}
+  .tgrid{grid-template-columns:repeat(2,1fr)}
+  .nb{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ============ INTRO ============ -->
+<section id="intro">
+  <header class="mast">
+    <div class="kicker">思考のクセを測る / 36問</div>
+    <h1>思考法タイプ診断</h1>
+    <p class="standfirst">性格ではなく「考えるときのクセ」を測ります。36問に答えると <span class="tcode"><span class="pa">CALR</span>-<span class="pb">O</span></span> 形式の4文字コードと、8つの思考法の順位が返ります。</p>
+  </header>
+
+  <div class="facts">
+    <div class="fact"><span class="fact-k">設問</span><span class="fact-v">36問</span></div>
+    <div class="fact"><span class="fact-k">所要</span><span class="fact-v">約5分</span></div>
+    <div class="fact"><span class="fact-k">登録</span><span class="fact-v">不要</span></div>
+  </div>
+
+  <h3>測る4つの軸</h3>
+  <div class="axis-brief">
+    <div class="ab"><span class="ab-c"><span class="pa">C</span> / <span class="pb">P</span></span><span class="ab-t"><b>足場</b>　何を材料にするか — 概念 / 現象</span></div>
+    <div class="ab"><span class="ab-c"><span class="pa">A</span> / <span class="pb">S</span></span><span class="ab-t"><b>運動</b>　どう動かすか — 分析 / 総合</span></div>
+    <div class="ab"><span class="ab-c"><span class="pa">L</span> / <span class="pb">W</span></span><span class="ab-t"><b>規範</b>　何で判断を終えるか — 整合 / 実効</span></div>
+    <div class="ab"><span class="ab-c"><span class="pa">R</span> / <span class="pb">X</span></span><span class="ab-t"><b>射程</b>　どこまで届かせるか — 普遍 / 文脈</span></div>
+    <div class="ab"><span class="ab-c"><span class="pa">F</span> / <span class="pb">O</span></span><span class="ab-t"><b>終わらせ方</b>　確定 / 保留（4文字のあとに付きます）</span></div>
+  </div>
+
+  <p style="margin-top:26px">どれも<strong>優劣ではありません</strong>。8つの極それぞれを独立に測るので、「両方強い人」と「どちらもまだ薄い人」が別々に出ます。</p>
+
+  <p style="margin-top:22px"><button class="btn" id="start">診断をはじめる</button></p>
+
+  <h3 style="margin-top:34px">16タイプを読む</h3>
+  <p style="margin:0 0 4px;font-size:14px;color:var(--ink-2)">コードを入れるか、下から選ぶと、そのタイプの説明だけを読めます。</p>
+  <div class="tlookup">
+    <input id="tlook" placeholder="CALR" maxlength="6" autocomplete="off" spellcheck="false">
+    <button class="btn ghost sm" id="tlookGo">開く</button>
+    <span class="hint" id="tlookErr" style="margin-left:0;color:var(--flag)" hidden>そのコードはありません</span>
+  </div>
+  <div class="tgrid" id="tgrid"></div>
+
+  <p class="note" style="margin-top:26px">この診断が測るのは「どこに身を置き、どう動かし、何で判断し、どこまで届かせるか」です。思考そのものを見張るメタ認知や、ここに挙がっていない技法は測っていません。境界付近の人は測るたびに結果が変わります。</p>
+</section>
+
+<!-- ============ QUIZ ============ -->
+<section id="quiz" hidden>
+  <div class="bar">
+    <div class="bar-top"><span id="qcount">Q1 / 36</span><span id="qsec">足場</span></div>
+    <div class="track"><i class="fill" id="fill"></i></div>
+  </div>
+
+  <p class="note" style="margin-top:14px">「ある問題に取りかかるとき」のことを思い浮かべて答えてください。</p>
+
+  <div class="qbox"><p class="qtext" id="qtext"></p></div>
+
+  <div class="likert" id="likert"></div>
+  <div class="lk-ends"><span>あてはまらない</span><span>どちらとも言えない</span><span>あてはまる</span></div>
+
+  <div class="qnav">
+    <button class="btn ghost sm" id="back">← 戻る</button>
+    <span class="hint" id="hint">キー 1〜5 でも回答できます</span>
+  </div>
+</section>
+
+<!-- ============ RESULT ============ -->
+<section id="result" hidden>
+  <div class="kicker" style="margin-bottom:10px">あなたの思考法タイプ</div>
+  <p class="rcode" id="rcode"></p>
+  <h2 class="rname" id="rname"></h2>
+  <p class="rmove" id="rmove"></p>
+  <div class="rbody" id="rbody"></div>
+  <div id="rflags"></div>
+
+  <h3>こういうとき、あなたはこう動く</h3>
+  <div id="rscenes"></div>
+
+  <h3>8つの思考法の順位</h3>
+  <div class="scales" id="scales"></div>
+  <p class="note" style="margin-top:12px">0〜100はそれぞれの極を独立に測った強さです。合計は一定になりません（「両方高い」も「両方低い」もそのまま出ます）。<b>65以上</b>＝はっきり出ている／<b>40未満</b>＝薄い／その間＝場面によって持ち替えている、と読んでください。</p>
+  <p class="note" id="spreadnote" style="margin-top:8px" hidden></p>
+
+  <h3>強く出ているもの・薄いところ</h3>
+  <div class="card" id="strength"></div>
+
+  <h3>抱えている矛盾</h3>
+  <div class="card">
+    <div class="tension"><span class="tension-n" id="tnum">0</span><span class="tension-l" id="tlabel"></span></div>
+    <div id="tbody"></div>
+  </div>
+
+  <h3>同じ型の4人</h3>
+  <div class="people" id="rpeople"></div>
+  <p class="note" style="margin-top:10px">この診断の枠組みで読んだ場合の見立てです。本人がそう名乗ったわけではありません。</p>
+
+  <h3>他のタイプとの関係</h3>
+  <div class="rel">
+    <div class="rel-c"><span class="rel-k">補完</span><div class="rel-v" id="compV"></div><div class="rel-d">あなたの盲点を全部持っている相手（4軸すべて反転）</div></div>
+    <div class="rel-c"><span class="rel-k">衝突</span><div class="rel-v" id="confV"></div><div class="rel-d">近いのに一点だけ噛み合わない相手（最も強い軸だけ反転）</div></div>
+  </div>
+
+  <h3>MBTIと重ねる</h3>
+  <div class="card">
+    <p style="margin-bottom:10px">MBTIは性格、これは思考のクセ。2つ並べるとプロフィールに書けます。</p>
+    <div class="mbti">
+      <input id="mbti" placeholder="INFP" maxlength="4" autocomplete="off" spellcheck="false">
+      <button class="btn ghost sm" id="mbtiSet">反映</button>
+    </div>
+  </div>
+
+  <h3>結果をシェアする</h3>
+  <div class="sharetext" id="sharetext"></div>
+  <div class="share">
+    <button class="btn sm" id="copyText">文面をコピー</button>
+    <button class="btn ghost sm" id="copyLink">結果リンクをコピー</button>
+    <a class="btn ghost sm" id="toX" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block">Xに投稿</a>
+  </div>
+  <p class="note" style="margin-top:14px">結果リンクを開くと、この結果がそのまま復元されます（回答はどこにも送信していません）。</p>
+
+  <div class="share" style="margin-top:26px">
+    <button class="btn ghost sm" id="again">もう一度やる</button>
+  </div>
+
+  <p class="note" style="margin-top:30px">この診断が測るのは「どこに身を置き、どう動かし、何で判断し、どこまで届かせるか」です。思考そのものを見張るメタ認知や、ここに挙がっていない技法は測っていません。境界付近の人は測るたびに結果が変わります。外的な基準との照合（妥当性の検証）は行っていません。</p>
+</section>
+
+<!-- ============ TYPE PAGE（診断せずにタイプを読む） ============ -->
+<section id="typepage" hidden>
+  <div class="tnav">
+    <button class="btn ghost sm" id="tpBack">← トップへ</button>
+    <span class="hint" style="margin-left:0">診断していない状態で読んでいます</span>
+  </div>
+
+  <div class="kicker" style="margin-bottom:10px">思考法タイプ</div>
+  <p class="rcode" id="tpcode"></p>
+  <h2 class="rname" id="tpname"></h2>
+  <p class="rmove" id="tpmove"></p>
+  <div class="rbody" id="tpbody"></div>
+
+  <h3>4文字の内訳</h3>
+  <div id="tpaxes"></div>
+
+  <h3>終わらせ方（5文字目）</h3>
+  <div class="card" id="tpsfx"></div>
+
+  <h3>こういうとき、このタイプはこう動く</h3>
+  <div id="tpscenes"></div>
+
+  <h3>同じ型の4人</h3>
+  <div class="people" id="tppeople"></div>
+  <p class="note" style="margin-top:10px">この診断の枠組みで読んだ場合の見立てです。本人がそう名乗ったわけではありません。</p>
+
+  <h3>隣のタイプ</h3>
+  <div class="nb" id="tpnb"></div>
+  <p class="note" style="margin-top:10px">1文字だけ違う4つです。自分がどれか迷うときは、この4つと読み比べると決まります。</p>
+
+  <h3>正反対のタイプ</h3>
+  <div class="nb" id="tpcomp" style="grid-template-columns:1fr"></div>
+
+  <div class="share" style="margin-top:30px">
+    <button class="btn" id="tpStart">自分のタイプを診断する</button>
+    <button class="btn ghost sm" id="tpCopy">このタイプのリンクをコピー</button>
+  </div>
+
+  <p class="note" style="margin-top:26px">ここに書いてあるのは、4文字がそろったときに出やすい傾向です。実際の結果では8つの極それぞれの強さも出るので、同じ4文字でも読みは変わります。</p>
+</section>
+
+<footer>
+  <span>思考法タイプ診断</span>
+  <span id="ver">v0.1</span>
+</footer>
+</div>
+
+<script>
+"use strict";
+/* ============================================================
+   思考法タイプ診断 — 採点ロジック
+   企画書 v0.8 / notes/ideas/thinking-type-shindan.md に対応
+   ============================================================ */
+
+/* --- 調整つまみ（βで動かす可能性がある定数はここに集約） --- */
+const CONF = {
+  HIGH: 65,        // 「高い」とみなす閾値（矛盾＝両極ともこれ以上／強みもこれ以上）
+  LOW: 40,         // 「低い」とみなす閾値（弱みはこれ未満だけ）
+  FLAT_RAW: 1,     // 同じ軸の素点（0〜16）の差がこれ以下なら「境界」
+                   // ＝4問のうち1問が1段階ズレただけで逆転する帯
+  SUFFIX_MID: 50,  // F/O の分割点
+  GREEN: 40,       // 8極の平均がこれ未満なら「伸びしろ型」
+  FLAT_SPREAD: 15  // 8極の最高と最低の差がこれ未満なら「順位が入れ替わりやすい」と添える（O-8）
+};
+
+/* --- 8極 --- */
+const POLES = {
+  C:{name:"概念",axis:"足場",side:"a",pair:"P",
+     concept:"目の前のことを、すでに知っている考え方のほうへ寄せて扱う（＝言語化のうまさ・内省ぐせではない）",  // ← 設問を書き換えるとき、同じものを測っているかはこの定義で判定する
+     gloss:"知っている考え方のほうへ寄せて扱う",
+     high:"はじめて出会うものでも、知っている考え方に乗せて見通しよく扱える。過去に誰かが考えたことを踏み台にできる",
+     low:"知っている考え方に結びつけないまま進むので、話が個別の事情に貼りついたまま動かなくなることがある",
+     blind:"言語化できないものを、無かったことにしやすい",
+     bands:{high:"目の前のことを、すでに知っている考え方の棚にすばやく載せられます。初めて出会う問題でも「これは要するに何の話か」がすぐ立つので、過去に誰かが考えたことを踏み台にできます。",
+            mid:"知っている考え方に寄せるときと、そのまま受け取るときがあります。持ち替えがきくぶん、「あなたはこう考える人だ」とは言われにくい。",
+            low:"目の前のものを、知っている考え方に寄せずに扱います。毎回その場で組み立てるので手数はかかりますが、型に合わない事実を切り落とさずに済みます。"}},
+  P:{name:"現象",axis:"足場",side:"b",pair:"C",
+     concept:"まだどの考え方にも乗っていない情報を、そのまま抱えておく（＝現場好き・人を疑うことではない）",  // ← 設問を書き換えるとき、同じものを測っているかはこの定義で判定する
+     gloss:"まだ考え方に乗っていない情報を抱えておく",
+     high:"まだ言葉になっていない情報を落とさずに持っていられる。前提が現実とズレたとき、最初に気づくのはこの構え",
+     low:"説明のついたものだけで話を終えるので、まだ言葉になっていない部分が落ちる",
+     blind:"掴んだことの根拠を、人に示せない",
+     bands:{high:"まだ言葉になっていない情報を、捨てずに持っていられます。「なんか違う」を抱えたまま進めるので、前提が現実とズレたとき最初に気づくのはこの構えです。",
+            mid:"言葉になったものと、まだならないものを両方あつかいます。違和感を拾うこともありますが、説明がついた時点で手放すことのほうが多い。",
+            low:"説明のついたものを材料にして進みます。話は速く運びますが、まだ言葉になっていない部分は最初から視野に入りません。"}},
+  A:{name:"分析",axis:"運動",side:"a",pair:"S",
+     concept:"対象を部分に分け、どの部分が効いているかを見る（＝細かいこと好きではない）",  // ← 設問を書き換えるとき、同じものを測っているかはこの定義で判定する
+     gloss:"部分に分け、どこが効いているかを見る",
+     high:"絡まった問題から、効いている部分だけを切り出せる",
+     low:"話をひとかたまりのまま扱うので、どこが効いているのかを特定しないまま進む",
+     blind:"要素どうしの相互作用を切り落とす",
+     bands:{high:"絡まった問題から、効いている部分だけを切り出せます。どこを触れば動くのかの特定が速い。",
+            mid:"分けて見るときと、ひとかたまりのまま扱うときがあります。切り分けは必要に迫られてから始めるので、最初の一手は速くありません。",
+            low:"問題をひとかたまりのまま扱います。全体の感じはつかめますが、どこが効いているのかは特定しないまま進みます。"}},
+  S:{name:"総合",axis:"運動",side:"b",pair:"A",
+     concept:"対象をつながりとして捉え、全体の配置を見る（＝おおざっぱ・細部が苦手ではない）",  // ← 設問を書き換えるとき、同じものを測っているかはこの定義で判定する
+     gloss:"つながりとして捉え、全体の配置を見る",
+     high:"離れたもの同士を結びつけて、問題の形そのものを見つけられる",
+     low:"部分は見えても、それらがどうつながっているかの像を持ちにくい",
+     blind:"話が曖昧なまま大きくなる",
+     bands:{high:"離れたもの同士を結びつけて、問題の形そのものを見つけられます。別の領域の話を持ち込めるのはこの構えです。",
+            mid:"つながりを見るときと、単体で見るときがあります。関係が目に入ることはありますが、そこから問題の形そのものを組み直すところまでは行きません。",
+            low:"一つひとつを単体であつかいます。目の前の処理は速いのですが、それが何と関係しているかの像は持ちにくい。"}},
+  L:{name:"整合",axis:"規範",side:"a",pair:"W",
+     concept:"判断の良し悪しを「内側の筋が通っているか」で決める",  // ← 設問を書き換えるとき、同じものを測っているかはこの定義で判定する
+     gloss:"筋が通っているかで判断を終える",
+     high:"矛盾を残さないので、出した結論があとから崩れない",
+     low:"筋の通らなさを見過ごすので、同じ破綻を何度も踏む",
+     blind:"筋が通らないという理由で、現実に効く手を捨てる",
+     bands:{high:"矛盾を残さないので、出した結論があとから崩れません。人が見落とす筋の通らなさに気づきます。",
+            mid:"筋を確かめるときと、通らなくても進めるときがあります。破綻に気づく力はありますが、気づいたあと止まるかどうかはそのときの状況次第です。",
+            low:"筋の通らなさをあまり気にせず進みます。動きは速いのですが、同じ破綻を何度も踏みます。"}},
+  W:{name:"実効",axis:"規範",side:"b",pair:"L",
+     concept:"判断の良し悪しを「実際に機能するか」で決める（＝せっかち・早く動きたいではない）",  // ← 設問を書き換えるとき、同じものを測っているかはこの定義で判定する
+     gloss:"動くかどうかで判断を終える",
+     high:"完璧な案を待たずに、いま効く手を出せる",
+     low:"正しいが動かないものを、動かないまま抱え続ける",
+     blind:"場当たりになり、やったことが積み上がらない",
+     bands:{high:"完璧な案を待たずに、いま効く手を出せます。理屈がつかなくても結果が出るならそれを採ります。",
+            mid:"効くかどうかも、筋が通るかも、どちらも見ます。判断の基準が一本に決まっていないので、人によって違う顔に見えます。",
+            low:"実際に何が変わるかを判断材料に入れません。正しいけれど動かないものを、動かないまま抱え続けます。"}},
+  R:{name:"普遍",axis:"射程",side:"a",pair:"X",
+     concept:"得た答えを、次の別の場面へ持ち越せる形にする（＝決まりに従う硬さではない）",  // ← 設問を書き換えるとき、同じものを測っているかはこの定義で判定する
+     gloss:"次の別の場面へ持ち越せる形にする",
+     high:"一度の経験を、次に使える形にして持ち越せる",
+     low:"毎回ゼロから考えるので、同じ苦労を何度も繰り返す",
+     blind:"目の前の例外を、型に押し込む",
+     bands:{high:"一度の経験を、次に使える形にして持ち越せます。同じ苦労を二度はしません。",
+            mid:"次へ持ち越すときと、その場で終わらせるときがあります。労力に見合うと思ったときだけ形を残すので、蓄積は選択的です。",
+            low:"毎回ゼロから考えます。今回に合わせ切れますが、やったことが次に積み上がりません。"}},
+  X:{name:"文脈",axis:"射程",side:"b",pair:"R",
+     concept:"過去に成立した答えを、いまの場へそのまま持ち込まない（＝決まりや権威が嫌いではない）",  // ← 設問を書き換えるとき、同じものを測っているかはこの定義で判定する
+     gloss:"過去の答えをいまの場へそのまま持ち込まない",
+     high:"前と同じに見える一件の、今回だけの違いに気づける",
+     low:"事情の違いを見ないので、前と同じ手で滑る",
+     blind:"経験が次に積み上がらない",
+     bands:{high:"前と同じに見える一件の、今回だけの違いに気づけます。前例が効かない場面で強い。",
+            mid:"今回の事情を見るときと、前のやり方をそのまま通すときがあります。違いに気づくかどうかは、その日の余裕に左右されます。",
+            low:"今回だけの事情は考えに入れません。処理は速いのですが、前と同じ手で滑ります。"}}
+};
+const AXES = [["C","P"],["A","S"],["L","W"],["R","X"]];
+
+/* --- 16タイプ（企画書 §4） --- */
+const TYPES = {
+  CALR:{name:"設計士",  move:"概念を分解し、誰にでも通る規則として組み立てる",
+          body:"知っている考え方に当てはめてから部品に割り、筋が通るかで判断して、誰にでも通る規則の形で残します。｜設計図を引く・手順や規約を作る場面で強い。一度組んだものが後から崩れにくいのはこの型です。｜つまずくのは、規則に収まらない一件が来たとき。例外を認めるより、規則のほうを守りたくなります。",
+          scenes:["まず似た事例の枠組みを探し、それを分解して自分の手順に組み直す。手を動かす前に全体の設計図ができている。裏を返せば、設計図が引けるまで着手しない。","どちらが正しいかではなく、どちらの前提が矛盾しないかで決める。相手の主張の中の食い違いを指摘するので、正しいのに嫌われることがある。","例外が出ても、まず規則のほうを疑わない。「運用が悪かった」と考える。規則を捨てるのは、同じ例外が三度目に出たとき。"],
+          people:[{name:"イマヌエル・カント",note:"誰にでも同じように当てはまる形でしか道徳を認めなかった。「その行いを全員がやっても成り立つか」で判断する"},{name:"赤木リツコ（新世紀エヴァンゲリオン）",note:"現象を理論に落とし、手順として運用する。想定外が出ると理論の側を守ろうとする"},{name:"アイザック・ニュートン",note:"ばらばらの観測を、どこでも成り立つ一組の法則に組み直した"},{name:"ル・コルビュジエ",note:"人体の寸法から普遍的な尺度をつくり、建築をその規則の上に建てた"}]},
+  CALX:{name:"校閲者",  move:"定義を精査し、その一件だけの破綻を見つける",
+          body:"知っている考え方に当てはめて部品に割り、筋が通るかで判断しますが、答えは今回限りのものとして扱います。｜目の前の一件に固有の破綻を見つけるのが速い。他人が「だいたい合っている」で流すところで止まれます。｜つまずくのは、次に活かす形を残さないこと。同じ精度の作業を毎回ゼロから組み直します。",
+          scenes:["全体の枠を先に立てるが、立てた直後から「この件では通用しない箇所」を探しにいく。枠は使うが、信じてはいない。","相手の論の穴を正確に突く。ただし対案は出さない。壊すことと建てることは別の作業だと知っている。","通用しなくなった理由を特定するのは速い。だが「では次どうするか」で止まる。特定と処方は別の仕事だと考えている。"],
+          people:[{name:"ルートヴィヒ・ヴィトゲンシュタイン",note:"自分で建てた体系を自分で壊した。言葉の意味は使われる場ごとに違うと言い切った"},{name:"L（DEATH NOTE）",note:"証拠の一つひとつの整合を詰めて、その事件だけの矛盾から犯人を絞る"},{name:"クルト・ゲーデル",note:"完全に見える体系の内側に、その体系では決められない一点があることを示した"},{name:"アガサ・クリスティ",note:"完璧に見える状況の中に、一箇所だけ筋の通らない点を仕込む"}]},
+  CAWR:{name:"軍師",    move:"抽象モデルを要素に割り、勝ち筋を型として標準化する",
+          body:"知っている理論に当てはめてから部品に割り、どこが効くのかを見ます。判断は「筋が通るか」ではなく「実際に勝てるか」。勝てた形は次にも使える型として残します。｜同じ問題を二度は考えません。勝ち筋を標準化して回せるので、数をこなす場面で強い。｜つまずくのは、型に合わない一件が来たとき。合わないという事実より、型のほうを信じたくなります。",
+          scenes:["「これは要するに何の問題か」を先に決める。知っている型に当てはめてから、勝つために効く部分だけを取り出す。全部を理解しようとはしない。動くのに必要な最小限で始める。","相手の主張に筋が通っているかは重視しない。「それで勝てるのか」だけを見る。正しいが勝てない案を、正しさを認めたまま捨てられる。この切り替えの速さが、周りには冷たく見えることがある。","型が効かなくなったとき、まず「使い方を間違えた」と考える。型そのものを疑うまでに時間がかかる。ただし疑い始めてからは、新しい型を作るのが速い。"],
+          people:[{name:"ニッコロ・マキャヴェリ",note:"理想の統治ではなく、実際に権力が保たれる条件だけを書いた。正しさより効くかどうか"},{name:"ルルーシュ（コードギアス）",note:"戦術を型として持ち、毎回そこに当てはめて勝ちにいく。型が破られたときだけ立ち止まる"},{name:"孫子",note:"個々の戦い方ではなく、勝ち方そのものを一般化して残した"},{name:"ジョン・フォン・ノイマン",note:"駆け引きをゲームの型に還元し、どの場面にも使える解を出した"}]},
+  CAWX:{name:"外科医",  move:"理論を持ちつつ、目の前の一例に合わせて手を変える",
+          body:"理論を持ったまま目の前の一例に入り、どこが効くのかを切り分けて、その場で手を変えます。｜前例が効かない個別案件に強い。理屈を持っているので、出たとこ勝負にはなりません。｜つまずくのは、やったことが次に積み上がらないこと。毎回うまくやるのに、手札が増えません。",
+          scenes:["知っている理論を持ったまま現場に入る。理論は入る前の準備で、入った後は目の前の反応だけを見る。","議論では決まらないと判断したら、小さく試して結果を出す。言葉ではなく結果で押し切る。","通用しなくなったことにすぐ気づき、次の手に切り替える。ただし前の手がなぜ効いていたかは記録しない。"],
+          people:[{name:"ジョン・デューイ",note:"真理を固定せず、その状況で問題が解けたかどうかで判断した"},{name:"ブラック・ジャック",note:"医学の理屈を持ったまま、目の前の一人に合わせて手術の手を変える"},{name:"ウィリアム・オスラー",note:"教科書ではなくベッドサイドで教えた。理論は患者の前でしか意味を持たないとした"},{name:"リチャード・ファインマン",note:"物理の理論を持ちながら、その場の一件に合わせて説明のしかたを作り替えた"}]},
+  CSLR:{name:"思想家",  move:"概念を結びつけ、破綻のない大きな体系を編む",
+          body:"知っている考え方どうしを結びつけて、矛盾のない大きな体系に編み上げます。｜離れた領域をつなぐ話ができる。長く使える枠組みを作れるのはこの型です。｜つまずくのは、現実が体系に合わないとき。体系のほうが正しいので、現実の側を例外として処理します。",
+          scenes:["個別の課題を、より大きな問題の一部として位置づけようとする。小さい仕事でも背景を知りたがるので、立ち上がりが遅い。","相手と自分の主張を両方含む、上位の枠組みを探す。妥協ではなく統合を狙うので時間がかかる。","体系の側を修正する。現実に合わせて体系を捨てるのではなく、例外を含められる形に作り直す。"],
+          people:[{name:"ゲオルク・ヘーゲル",note:"対立するものを両方含む、より大きな一つの体系に組み上げた"},{name:"碇ゲンドウ（新世紀エヴァンゲリオン）",note:"個々の出来事を、ひとつの大きな計画の一部として配置し続ける"},{name:"アルベルト・アインシュタイン",note:"ばらばらの力を一つの理論でまとめようと、生涯その体系を追った"},{name:"ノーム・チョムスキー",note:"すべての言語の底にある共通の仕組みを立てた"}]},
+  CSLX:{name:"批評家",  move:"言説のつながりを読み、その作品固有の意味を問う",
+          body:"言葉や作品のつながりを読み、筋が通っているかを見ますが、判断はその一件に固有のものとして下します。｜他人が見落とす関係を拾って、それがなぜここで効くのかを説明できます。｜つまずくのは、自分から何かを立ち上げるとき。読むことに比べて、作ることの手数が少ない。",
+          scenes:["「これは何の文脈に置かれているものか」を先に読む。過去の似た事例との関係が見えるまで動かない。","相手がどの立場から話しているかを見抜く。論そのものより、論が出てきた背景を突く。","なぜ通用しなくなったかを、時代や状況の変化として説明できる。ただし自分がどうするかは、別の問題として残る。"],
+          people:[{name:"ジャック・デリダ",note:"テキストのつながりを読み、その一点にある裂け目から全体を読み替えた"},{name:"ヤン・ウェンリー（銀河英雄伝説）",note:"歴史の文脈から今の状況を読む。正しさは状況によって形を変えると考えている"},{name:"小林秀雄",note:"作品を法則で説明せず、その作品でしか起きていないことを言葉にした"},{name:"スーザン・ソンタグ",note:"写真や病いを、その時代の文脈に置き直して読んだ"}]},
+  CSWR:{name:"プロデューサー", move:"概念を束ね、社会で回り続ける仕組みを設計する",
+          body:"概念を束ねて全体の配置を決め、実際に回るかどうかで判断し、回った形を仕組みとして残します。｜人や資源を動かす場面で強い。理屈と結果の両方を持てるので、他人を巻き込めます。｜つまずくのは、仕組みに乗らない個別事情。全体が回ることを優先して、一件を切り落とします。",
+          scenes:["誰が何を持っているかを先に見る。自分でやるより、回る配置を作ることを考える。だから最初の数日は何もしていないように見える。","両方を立てる第三の案を出す。正しさより、この場が回るかどうかを優先する。原理を通したい相手からは、ごまかしに見える。","仕組みごと組み直す。個別の修理はしない。まだ動いている部分まで一度止めるので、周りは驚く。"],
+          people:[{name:"ジョン・スチュアート・ミル",note:"正しさを原理ではなく、社会全体で何が増えるかで測った"},{name:"夜神月（DEATH NOTE）",note:"個別の裁きではなく、世界が回り続ける仕組みそのものを作ろうとした"},{name:"ウォルト・ディズニー",note:"作品ではなく、作品が生まれ続ける仕組みのほうを設計した"},{name:"渋沢栄一",note:"一社ではなく、会社という仕組みを日本に敷いた"}]},
+  CSWX:{name:"演出家",  move:"全体像を持ちつつ、その場だけの体験を形づくる",
+          body:"全体像を持ったまま、その場だけの体験を組み立てます。判断は実際に効いたかどうか。｜一回性の場を作るのが速い。同じことを二度やらないので飽きられません。｜つまずくのは、再現できないこと。うまくいった理由を人に渡せません。",
+          scenes:["全体の絵を先に決めて、そこから逆算する。ただし絵は毎回違う。前回と同じにすることを嫌うので、実績のある型を持っていても使わない。","議論を勝ち負けにせず、場の温度を変えて別の話にしてしまう。論点をずらしていると取られることがある。","通用しなくなったこと自体を、次の素材として使う。失敗を惜しまない。ただし何が効いていたのかは手元に残らない。"],
+          people:[{name:"ジル・ドゥルーズ",note:"固定した体系を拒み、その都度うまれるものの側に立った"},{name:"槙島聖護（PSYCHO-PASS）",note:"全体の絵を持ちながら、その場ごとに違う仕掛けを組む"},{name:"黒澤明",note:"全体の構図を決めたうえで、その一本でしか成立しない画を撮った"},{name:"寺山修司",note:"再演できない一回きりの場を作ることに賭けた"}]},
+  PALR:{name:"鑑識官",  move:"現場を切り分け、誰でも再現できる事実を特定する",
+          body:"まず現物を見て、部分に切り分け、筋が通るかで判断し、誰でも再現できる形にします。｜事実の特定が正確。言葉になる前の情報から始めるので、前提のズレに強い。｜つまずくのは、事実が揃わないと動けないこと。判断が要る場面で止まります。",
+          scenes:["手元の事実を集めるところから始める。解釈は後回し。事実が足りないうちは意見を言わないので、頼りないと思われることがある。","どちらの主張が事実と合うかを確かめる。相手の立場も、その場の空気も判断に入れない。","何が変わったのかを特定する。前提の変化に気づくのが速い。ただし気づいた後どうするかは、別の人の仕事だと考えている。"],
+          people:[{name:"フランシス・ベーコン",note:"思弁を捨て、観察を積み上げるところから知をやり直した"},{name:"石神千空（Dr.STONE）",note:"手元の材料と実験から始め、誰でも再現できる手順にして渡す"},{name:"マリ・キュリー",note:"測り続けることで、まだ名前のない元素を特定した"},{name:"ロベルト・コッホ",note:"病原菌を特定する手順そのものを、誰でも使える原則として定めた"}]},
+  PALX:{name:"目利き",  move:"細部を凝視し、その個体だけの特異性を見抜く",
+          body:"現物を細かく見て、その個体だけの特徴を筋道立てて言えます。｜他人には同じに見えるものの差が見える。一点ものを扱う場面で強い。｜つまずくのは、その目を人に渡せないこと。根拠を示せないので、判断が属人的になります。",
+          scenes:["現物を見る。写真や説明では判断しない。同じに見えるものの差が見えるまで時間をかける。急がされると判断そのものを保留する。","これは違う、と言える。ただしなぜ違うかを言葉にするのに時間がかかる。判断のほうが説明より先に出るので、独断に見られる。","個体差だと考える。一般的な原因を探すより、この一件の固有の事情を見る。だから同じ問題が繰り返しても、毎回ゼロから見る。"],
+          people:[{name:"モーリス・メルロ＝ポンティ",note:"知覚を言葉より先にあるものとして扱い、身体で世界に触れることから始めた"},{name:"海原雄山（美味しんぼ）",note:"同じに見える素材の差を見抜く。理屈ではなく現物で判断する"},{name:"北大路魯山人",note:"器も料理も、その一点の出来だけを見た"},{name:"中島誠之助",note:"ひと目で本物と贋物を分ける。説明より先に判断が出る"}]},
+  PAWR:{name:"整備士",  move:"不具合を分解し、決まった手順で即座に直す",
+          body:"現物を見て不具合を切り分け、実際に直るかどうかで判断し、直し方を手順として残します。｜再現性のある修復が速い。理屈より先に手が動きます。｜つまずくのは、前例のない壊れ方。手順の外に出ると急に遅くなります。",
+          scenes:["まず分解して構造を見る。説明書より先に中身を開けたがる。どこが壊れているかが分かれば、直し方はもう手の中にある。","言い合いにはしない。実際に動かして見せる。議論の途中で席を立って現物を持ってくるので、話を聞いていないと思われることがある。","直せるかどうかで判断する。直らないと分かった時点で執着せず交換する。前の手がなぜ効いていたのかを振り返ることには興味がない。"],
+          people:[{name:"チャールズ・サンダース・パース",note:"目の前の異常から原因を推し当てる手順を、方法として定式化した"},{name:"パズー（天空の城ラピュタ）",note:"機械を分解して直す。手順を持っていて、迷いなく手が動く"},{name:"本田宗一郎",note:"図面より先に現物を触り、直し方を作業として残した"},{name:"豊田佐吉",note:"不具合を止める仕組みそのものを織機に組み込んだ"}]},
+  PAWX:{name:"職人",    move:"手の感覚で、その素材の癖に合わせて仕上げる",
+          body:"手の感覚で素材の状態を見て、その一点に合わせて仕上げます。判断は出来上がりが良いかどうか。｜同じ材料が二つない場面で強い。言葉にできない差を扱えます。｜つまずくのは、教えられないこと。自分の手は動くのに、他人の手は動きません。",
+          scenes:["まず触ってみる。素材の状態を確かめてから、その日のやり方を決める。手順は毎回少し違う。段取りを先に出せと言われるのが一番困る。","言葉では戦わない。出来上がったもので示す。議論の場では黙っているので、負けを認めたように見られる。","素材のせいか自分のせいかを、手の感覚で切り分ける。切り分けはできるが、人には説明できない。だから同じことが起きても、他人は学べない。"],
+          people:[{name:"マイケル・ポランニー",note:"人は語れる以上のことを知っている、と言って暗黙知を立てた"},{name:"ウィンリィ・ロックベル（鋼の錬金術師）",note:"使う人の体に合わせて機械鎧を組む。同じものは二つ作らない"},{name:"西岡常一",note:"木の癖を読んで組む。同じ図面でも木ごとに手を変えた"},{name:"小野二郎",note:"その日の魚の状態に合わせて、握りの手を毎回変える"}]},
+  PSLR:{name:"数理学者",move:"現象のつながりを丸ごと捉え、背後の普遍法則を導く",
+          body:"現象を丸ごと捉えて、その背後にある関係を矛盾なく取り出し、どこでも成り立つ形にします。｜個別の事実から法則を立てるのが速い。｜つまずくのは、法則が立たない領域。きれいな形が見えないものを、扱えないものとして置きます。",
+          scenes:["具体例をいくつか集めて、そこに共通する構造を探す。例が三つ揃うまで判断を保留する。一件だけでは結論を出さない。","どちらの主張がより少ない仮定で説明できるかを見る。相手の熱意や立場は判断に入れない。","前提のどれが崩れたかを特定し、法則のほうを一般化し直す。例外が出たことを、法則が壊れた証拠ではなく、まだ粗いという合図として扱う。"],
+          people:[{name:"ゴットフリート・ライプニッツ",note:"個々の現象の背後に、すべてを貫く一つの秩序があると考えた"},{name:"牧瀬紅莉栖（STEINS;GATE）",note:"起きた現象を観測し、そこから一般的な理論を立て直す"},{name:"ヨハネス・ケプラー",note:"ティコの観測データの山から、惑星が従う法則を取り出した"},{name:"チャールズ・ダーウィン",note:"島ごとの生き物の違いを見て、生物全体を貫く原理にした"}]},
+  PSLX:{name:"民俗学者",move:"現場の空気を浴び、その土地固有の文脈を記録する",
+          body:"その場の空気を浴びて全体のつながりを捉え、筋道をつけて、その土地固有のものとして記録します。｜文脈ごと理解するのが得意。外から見ると意味のない振る舞いの理由が分かります。｜つまずくのは、次に使う形にしないこと。理解は深いのに、持ち出せません。",
+          scenes:["その場に入って、しばらく何もしない。まず空気を掴む。成果を急かされると掴む前に動くことになり、精度がはっきり落ちる。","相手がなぜそう考えるに至ったかの経緯を先に聞く。正誤の判断は後に置く。そのせいで、賛成していると誤解されることがある。","状況が変わったこと自体を受け入れ、変化のほうを記録する。元に戻そうとはしない。だから対策を求められると弱い。"],
+          people:[{name:"ミシェル・フーコー",note:"普遍を疑い、その時代その場所でだけ成り立っていた仕組みを掘り出した"},{name:"アシタカ（もののけ姫）",note:"どちらの側にも属さず、その土地で何が起きているかを見にいく"},{name:"柳田國男",note:"中央の歴史ではなく、土地ごとに残った話を歩いて集めた"},{name:"南方熊楠",note:"分類に収まらないものを、収まらないまま記録し続けた"}]},
+  PSWR:{name:"航海士",  move:"潮目を読み、どの海域でも使える針路を割り出す",
+          body:"その場の状況を丸ごと読み、実際に進むかどうかで判断し、どこでも使える読み方として残します。｜視界の悪い場面で強い。情報が揃わなくても方向が出せます。｜つまずくのは、なぜそう判断したかを説明できないこと。読みは当たるのに、根拠が渡せません。",
+          scenes:["情報が揃うのを待たずに方向を決める。全体の流れを読んで、大きく外さないほうを選ぶ。完璧な計画より、動き出してから直すほうを取る。","議論が長引くと判断したら、先に動けるほうを選ぶ。決着をつけずに進めるので、話が終わっていないと感じる人がいる。","早めに気づいて針路を変える。変えた理由は後から説明する。説明が後になるぶん、思いつきで変えたように見られる。"],
+          people:[{name:"ウィリアム・ジェイムズ",note:"経験の流れをそのまま捉え、役に立つかどうかで真理を測った"},{name:"ナミ（ONE PIECE）",note:"空と海の様子から進める針路を読む。判断は速く、根拠は後から出る"},{name:"アーネスト・シャクルトン",note:"計画が崩れた南極で、全員生還という一点だけを基準に判断を変え続けた"},{name:"ジェームズ・クック",note:"未知の海で、どこでも使える航海の型を残した"}]},
+  PSWX:{name:"調停者",  move:"場の空気を全身で受け、その場が収まる解を出す",
+          body:"場の空気を全身で受けて、その場が収まる形を出します。判断は実際に収まったかどうか。｜人と人のあいだで強い。理屈では動かないものを動かせます。｜つまずくのは、同じ場が二度と来ないこと。毎回一から読み直すので、消耗します。",
+          scenes:["その場にいる人の様子を先に見る。課題の中身より、誰と誰がどう向き合っているかを読む。人の配置が決まれば仕事は半分終わっている。","どちらが正しいかは扱わない。両方が引ける線を探す。正しさを通したい相手からは、味方をしてくれないと思われる。","場の空気が変わったことを、誰よりも先に感じる。ただし何が変わったかは言葉にしない。説明を求められてから、慌てて理由を探す。"],
+          people:[{name:"マルティン・ブーバー",note:"人を対象として扱わず、その場の関係そのものを見た"},{name:"ジンベエ（ONE PIECE）",note:"敵味方の間に立ち、その場が収まる線を出す"},{name:"ネルソン・マンデラ",note:"裁くのではなく、対立していた両方が同じ国で暮らせる形を作った"},{name:"緒方貞子",note:"原則より現場を優先し、目の前の人が助かる判断をその場で下した"}]}
+};
+/* 矛盾＝同じ軸の両極がともに HIGH。内部定義は「緊張」（H-7）＝論理的な矛盾ではなく、
+   同時に最大化しづらい優先度の競合。バランスが良いという意味ではない（H-6）。 */
+const TENSION = {
+  足場:"言葉にできることと、まだできないことを両方抱えます。説明のつく形にしながら、説明からこぼれたものも捨てない。材料の取りこぼしは少ないぶん、判断は遅くなります。",
+  運動:"分けることと、つなげることを両方やります。細部と全体を行き来できますが、どちらから入るかを毎回決め直すので立ち上がりが遅い。",
+  規範:"筋が通っていることと、実際に動くことを両方要求します。妥協点が狭いので決まるまでが長い。決まったあとは崩れません。",
+  射程:"次に使える形にしながら、今回だけの事情にも合わせます。両立させようとするぶん、一件あたりの手間が大きくなります。"
+};
+
+const SUFFIX = {
+  F:{name:"確定型", desc:"仮でも結論を置いて動く。決まっていない状態を長くは置かない"},
+  O:{name:"保留型", desc:"決めずに置いておける。早い結論を信用しない"}
+};
+
+/* --- 36問（本体32＋終わらせ方4）--- */
+/* rev:1 は逆転項目。§5 のルールにより軸ごとに1問まで */
+const Q = [
+/* 1スケール4問は、同じ構成概念を「別の角度」から聞く。角度が重なると言い換えが並ぶ（重複感）。
+   角度（2026-09-13改訂）:
+     着手＝取りかかるとき最初に何をするか
+     注目＝同じものを見たとき、どこに目が行くか
+     停滞＝分からない・噛み合わないときにどう反応するか
+     優先＝何を削ってでも取るか（「その極 vs 反対極」ではなく「その極 vs コスト」で書く＝N-3）
+     逆転＝その極の行動の不在
+   ⚠「経験」の角度は廃止した（O-2）。「〜した経験が多い」は構えではなく、成功体験の申告量・
+     人生経験の広さ・自己効力感を拾う。中高生と大人を同じ尺度に乗せる診断では特に効く。
+   ⚠「両極の衝突場面」を4問目に固定する案は採らない（O-6）。両極に鏡像を置くと軸が定義から
+     負相関になり、§3の独立測定（両極とも高い人／低い人の分離）が壊れる＝L-1・N-3と同じ罠。
+   逆転は軸ごとに1問まで（D-7）＝C・S・L・X とサフィックスの計5問だけ。 */
+
+  {s:"C",g:"着手",t:"新しい問題に出会ったら、まず知っている理論やパターンに当てはめて考える"},
+  {s:"A",g:"着手",t:"複雑な問題に向き合う際、全体を構成している要素を一つずつ切り分けて把握する"},
+  {s:"L",g:"着手",t:"出てきた答えそのものより、そこに至るまでの論理の道すじが正しいかを見る"},
+  {s:"R",g:"着手",t:"目の前の課題を処理しながら、別の機会にも応用できるやり方を探し出そうとする"},
+  {s:"P",g:"着手",t:"人の説明を聞く前に、まず自分でそのものを直接見て確かめたい"},
+  {s:"S",g:"着手",t:"何かを考えるときは、まず何と何がつながっているかを先に見る"},
+  {s:"W",g:"着手",t:"方法を選ぶとき、理屈が完全に説明できなくても、実際に役立つならそれを選ぶ"},
+  {s:"X",g:"着手",t:"過去に実績がある方法であっても、今回の状況ならではの事情を慎重に確認する"},
+
+  {s:"C",g:"注目",t:"人の話を聞く場面では、具体的な出来事より、背後にある法則や仕組みに目が向く"},
+  {s:"A",g:"注目",t:"物事がうまく運ばないときは、全体のどの要素に原因があるのかを突き止めようとする"},
+  {s:"L",g:"停滞",t:"説明の途中に論理の飛躍があると、その先の結論をすんなり納得することはできない"},
+  {s:"R",g:"注目",t:"うまくいったやり方を見ると、次に似たことが起きたときも使えるかを考える"},
+  {s:"P",g:"注目",t:"よく整理された説明を聞いても、そこで触れられていないことが気になる"},
+  {s:"S",g:"注目",t:"ひとつのことを見ると、それが他の何とつながっているかがまず気になる"},
+  {s:"W",g:"注目",t:"新しい提案を聞く際、それによって現実の状況がどう変化するのかに意識が集中する"},
+  {s:"X",g:"注目",t:"一見すると前回と同じに見える課題でも、今回の場に特有の差異に自然と目が留まる"},
+
+  {s:"C",g:"感覚",t:"雑多な出来事が、ひとつのすっきりした理屈で説明しきれたときに手応えを感じる"},
+  {s:"A",g:"優先",t:"時間がかかっても、成果に直接効いている要素を特定する作業を優先する"},
+  {s:"L",g:"優先",t:"うまく運んでいるやり方でも、論理に破綻があれば一度止めて見直す"},
+  {s:"R",g:"優先",t:"今回だけで済ませる手軽さより、次の機会にも再利用できるほうを優先する"},
+  {s:"P",g:"優先",t:"どれほど納得のいく説明を受けても、自分が直接見て受けた印象は消さない"},
+  {s:"S",g:"優先",t:"時間が余計にかかっても、それぞれが何とどうつながっているかまで知りたい"},
+  {s:"W",g:"優先",t:"どれほど整った理屈であっても、現実の状況を動かせないなら意味が薄いと判断する"},
+  {s:"X",g:"優先",t:"過去のやり方を流用すれば楽なときでも、今回の事情に合わせて工夫し直す手間をかける"},
+
+  {s:"C",g:"逆転",t:"起きている事柄を、すでにある理論や決まった型に当てはめて捉えることは少ない",rev:1},
+  {s:"A",g:"停滞",t:"いくつかの話が混ざっていると、どれとどれが別の話なのかを分けたくなる"},
+  {s:"L",g:"逆転",t:"論理の筋道に多少のほころびがあっても、自分はあまり気にならない",rev:1},
+  {s:"R",g:"停滞",t:"似たような問題を毎回ゼロから考え直すのは、もったいないと感じる"},
+  {s:"P",g:"停滞",t:"考えが行き詰まったときは、うまく言えない引っかかりのほうが手がかりになる"},
+  {s:"S",g:"逆転",t:"物事が互いにどうつながっているかは、普段あまり気にしない",rev:1},
+  {s:"W",g:"感覚",t:"現実の状況が実際に動いたのを見たときに、はじめて納得できる"},
+  {s:"X",g:"逆転",t:"今回の場合はどこが違うのか、といったことは普段あまり考えない",rev:1},
+
+  {s:"F",g:"感覚",t:"結論が定まっていない状態が続くと、落ち着かない気分になる"},
+  {s:"F",g:"優先",t:"どちらとも言えない答えより、はっきりした答えのほうがいい"},
+  {s:"F",g:"停滞",t:"どちらとも解釈できる曖昧な説明を聞くと、もやもやが残る"},
+  {s:"F",g:"逆転",t:"答えが出ないまま考え続けても、べつに気にならない",rev:1}
+
+];
+const SECTION = {C:"足場",P:"足場",A:"運動",S:"運動",L:"規範",W:"規範",R:"射程",X:"射程",F:"終わらせ方"};
+
+/* ============================================================
+   採点
+   ============================================================ */
+function score(ans){
+  const sum={},n={};
+  Q.forEach((q,i)=>{
+    const v=ans[i];
+    if(v==null) return;
+    const val=q.rev? 4-v : v;
+    sum[q.s]=(sum[q.s]||0)+val; n[q.s]=(n[q.s]||0)+1;
+  });
+  const raw={};
+  Object.keys(SECTION).forEach(k=>{ if(n[k]) raw[k]=Math.round(sum[k]/n[k]/4*100); });
+
+  const code=[], borders=[];
+  AXES.forEach(([a,b],i)=>{
+    code.push(raw[a]>=raw[b]? a : b);   // 同点は a 側（C/A/L/R）。境界フラグで補う
+    if(Math.abs((sum[a]||0)-(sum[b]||0))<=CONF.FLAT_RAW) borders.push({axis:POLES[a].axis,i});
+  });
+  const suffix = raw.F>=CONF.SUFFIX_MID ? "F" : "O";
+
+  const tensions = AXES.filter(([a,b])=>raw[a]>=CONF.HIGH&&raw[b]>=CONF.HIGH).map(([a])=>POLES[a].axis);
+  const rank = Object.keys(POLES).sort((x,y)=>raw[y]-raw[x]);
+  const avg = Object.keys(POLES).reduce((t,k)=>t+raw[k],0)/8;
+
+  // 本人の8極平均からの差（O-8）。HIGH/LOW は絶対値なので、回答の散らばりが小さい人は
+  // 強み・弱み・矛盾が全部空振りして結果ページがほぼ空になる（奏がこれ）。
+  // 生スコアは D-2 の理由で捨てない＝両方出す。矛盾の判定は生スコアのまま。
+  const rel={}; Object.keys(POLES).forEach(k=>rel[k]=Math.round(raw[k]-avg));
+  const all8=Object.keys(POLES).map(k=>raw[k]);
+  const spread=Math.max(...all8)-Math.min(...all8);
+
+  // 各軸で勝っている極のスコア（特化の判定に使う。平均では PSWX 全振りを拾えない）
+  const winners = AXES.map(([a,b])=>Math.max(raw[a],raw[b]));
+  let profile="standard";
+  if(tensions.length===0){
+    if(winners.every(v=>v>=CONF.HIGH)) profile="special";
+    else if(avg<CONF.GREEN) profile = raw.P>=CONF.HIGH ? "field" : "green";
+  }
+  // 境界の軸を反転させた「もう一方のコード」。4文字の文法は壊さず、揺れだけを見せる
+  const alts = borders.map(b => {
+    const c = code.slice(); c[b.i] = flip(code[b.i]); return {axis:b.axis, code:c.join("")};
+  });
+  return {raw,sum,code:code.join(""),suffix,borders,alts,tensions,rank,avg,rel,spread,profile};
+}
+
+function sgn(v){ return v>=0? "+"+v : String(v); }
+function flip(c){ return POLES[c].pair; }
+function complement(code){ return code.split("").map(flip).join(""); }
+function conflict(code,rank){
+  const top=rank[0], ax=POLES[top].axis;
+  return code.split("").map(c=>POLES[c].axis===ax? flip(c):c).join("");
+}
+
+/* @test-boundary — ここから上だけを scripts/test-score.mjs が読み込む（DOM非依存） */
+
+/* ============================================================
+   画面
+   ============================================================ */
+const $ = id => document.getElementById(id);
+const el = (tag,cls,txt)=>{const e=document.createElement(tag); if(cls)e.className=cls; if(txt!=null)e.textContent=txt; return e;};
+const colorize = code => code.split("").map(c=>`<span class="${POLES[c].side==="a"?"pa":"pb"}">${c}</span>`).join("");
+
+let ans = new Array(Q.length).fill(null);
+let idx = 0;
+/* 表示順。ans と ?a= は常に Q の並び（＝インデックス）で持つので、
+   順番を変えても過去の結果URLも analyze.mjs もそのまま使える。
+   同じスケールの問が続くと「さっきと同じことを聞かれている」感と
+   回答セット（同じ段ばかり押す）が出るので、隣り合わないように振り直す。 */
+let order = Q.map((_, i) => i);
+function shuffleOrder(){
+  const n = Q.length;
+  for(let t = 0; t < 60; t++){
+    const o = Q.map((_, i) => i);
+    for(let i = n - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [o[i], o[j]] = [o[j], o[i]]; }
+    let ok = true;
+    for(let i = 1; i < n; i++) if(Q[o[i]].s === Q[o[i-1]].s){ ok = false; break; }
+    if(ok) return o;
+  }
+  return Q.map((_, i) => i);
+}
+let userMBTI = "";
+
+function show(sec){
+  ["intro","quiz","result","typepage"].forEach(k=>$(k).hidden = k!==sec);
+  window.scrollTo(0,0);
+}
+
+/* ---- クイズ ---- */
+const LK_LABELS=["まったくあてはまらない","あまりあてはまらない",
+                 "どちらとも言えない","ややあてはまる","とてもあてはまる"];
+function buildLikert(){
+  const box=$("likert"); box.innerHTML="";
+  const sizes=[22,15,9,15,22];
+  for(let v=0;v<5;v++){
+    const b=el("button","lk");
+    b.type="button"; b.dataset.v=v;
+    b.dataset.side = v<2 ? "b" : v>2 ? "a" : "n";
+    b.setAttribute("aria-pressed","false");
+    b.setAttribute("aria-label",LK_LABELS[v]);
+    b.title=LK_LABELS[v];
+    const d=el("span","dot"+(v===2?" neutral":"")); d.style.setProperty("--d",sizes[v]+"px");
+    b.appendChild(d);
+    b.addEventListener("click",()=>answer(v));
+    box.appendChild(b);
+  }
+}
+function renderQ(){
+  const q=Q[order[idx]];
+  $("qtext").textContent=q.t;
+  $("qcount").textContent=`Q${idx+1} / ${Q.length}`;
+  $("qsec").textContent=SECTION[q.s];
+  $("fill").style.width=(idx/Q.length*100)+"%";
+  $("back").disabled = idx===0;
+  [...$("likert").children].forEach(b=>{
+    b.setAttribute("aria-pressed", String(ans[order[idx]]===Number(b.dataset.v)));
+  });
+}
+function answer(v){
+  ans[order[idx]]=v;
+  renderQ();
+  setTimeout(()=>{
+    if(idx<Q.length-1){ idx++; renderQ(); }
+    else finish();
+  },140);
+}
+function pushURL(){
+  try{ history.replaceState(null,"",shareURL()); }catch(e){ /* sandbox では URL を書き換えられない */ }
+}
+function finish(){
+  pushURL();
+  renderResult(score(ans));
+  show("result");
+}
+
+/* ---- 結果 ---- */
+function renderResult(r){
+  const t=TYPES[r.code], sfx=SUFFIX[r.suffix];
+  $("rcode").innerHTML = colorize(r.code)+`<span class="${r.suffix==="F"?"pa":"pb"}">-${r.suffix}</span>`;
+  $("rname").textContent = `${t.name}・${sfx.name}`;
+  $("rmove").innerHTML = `${t.move}。<br><span style="color:var(--ink-3);font-size:13.5px">${r.suffix}（${sfx.name}）＝${sfx.desc}。</span>`;
+
+  // タイプ本文（工程3・4）。H-3「当てにいくのではなく読み筋を渡す」
+  const rb=$("rbody"); rb.innerHTML="";
+  (t.body||"").split("｜").forEach(par=>{ if(par) rb.appendChild(el("p",null,par)); });
+
+  /* 場面ごとの動き方。どの軸が効く場面かを決めてある：
+     ①着手＝足場と運動 ②対立＝規範 ③前のやり方が通じない＝射程（SCENE_K はタイプページと共用） */
+  const rs=$("rscenes"); rs.innerHTML="";
+  (t.scenes||[]).forEach((sc,i)=>{
+    const d=el("div","scene");
+    d.appendChild(el("div","scene-k",SCENE_K[i]));
+    d.appendChild(el("p",null,sc));
+    rs.appendChild(d);
+  });
+
+  /* 同じ型の4人。断定で書く（iriya指定）。注記は下に1行だけ置く */
+  const rp=$("rpeople"); rp.innerHTML="";
+  (t.people||[]).forEach(pe=>{
+    const d=el("div","pp");
+    d.appendChild(el("div","pp-n",pe.name));
+    d.appendChild(el("div","pp-d",pe.note));
+    rp.appendChild(d);
+  });
+
+  const flags=$("rflags"); flags.innerHTML="";
+  r.alts.forEach(a=>{
+    const f=el("span","border-flag");
+    f.innerHTML=`${a.axis} は境界 — <span class="tcode">${colorize(a.code)}</span> ${TYPES[a.code].name} でもある`;
+    flags.appendChild(f);
+    flags.appendChild(document.createTextNode(" "));
+  });
+  if(r.alts.length) flags.appendChild(el("p","note",
+    "境界の軸は、4問のうち1問が1段階ずれるだけで反対側に入れ替わります。どちらの読みも自分に当ててみてください。"));
+
+  /* 8スケール */
+  const sc=$("scales"); sc.innerHTML="";
+  r.rank.forEach((k,i)=>{
+    const p=POLES[k];
+    const row=el("div","sc "+p.side);
+    row.appendChild(el("span","sc-r",String(i+1)));
+    const nm=el("div","sc-n");
+    nm.appendChild(el("span","c",k));
+    nm.appendChild(el("span",null,p.name));
+    row.appendChild(nm);
+    const bar=el("div","sc-bar"), fi=el("i");
+    fi.style.width=r.raw[k]+"%";
+    fi.style.background = p.side==="a" ? "var(--pole-a)" : "var(--pole-b)";
+    bar.appendChild(fi); row.appendChild(bar);
+    row.appendChild(el("span","sc-v",String(r.raw[k])));
+    // その人のスコア帯に応じた説明。順位だけ出しても「自分が何なのか」は分からない
+    const band = r.raw[k]>=CONF.HIGH ? "high" : r.raw[k]<CONF.LOW ? "low" : "mid";
+    row.appendChild(el("p","sc-desc",p.bands[band]));
+    sc.appendChild(row);
+  });
+
+  const sn=$("spreadnote");
+  sn.hidden = r.spread >= CONF.FLAT_SPREAD;
+  if(!sn.hidden) sn.textContent =
+    `いちばん高い極といちばん低い極の差が${r.spread}点しかありません。この順位は測るたびに入れ替わりやすい範囲です。`;
+
+  /* 強く出ているもの・薄いところ
+     ＝順位表（bands）が各極の説明を持つので、ここは順位表に無い情報だけを置く：
+        どれが閾値を超えた／下回ったかの一覧と、1位であることの代償（blind） */
+  const st=$("strength"); st.innerHTML="";
+  const sgnList = ks => ks.map(k=>`<b>${k} ${POLES[k].name}</b>（${r.raw[k]}）`).join("　");
+  const strong=r.rank.filter(k=>r.raw[k]>=CONF.HIGH);
+  const weak=r.rank.filter(k=>r.raw[k]<CONF.LOW);
+
+  st.appendChild(el("div","card-h",`はっきり出ている（${CONF.HIGH}以上）`));
+  if(strong.length){
+    st.appendChild(el("p",null)).innerHTML = sgnList(strong);
+  }else if(r.spread===0){
+    st.appendChild(el("p",null,`8つとも同じ値（${r.raw[r.rank[0]]}）です。この回答からは前後が出せません。`));
+  }else{
+    // O-8: 絶対値で届かなくても「その人の中で前に出ているもの」は必ず出す
+    st.appendChild(el("p",null,
+      `${CONF.HIGH}を超える極はありません。あなたの中で前に出ているのは `))
+      .innerHTML += sgnList(r.rank.slice(0,2)) + `（自分の平均より ${sgn(r.rel[r.rank[0]])} / ${sgn(r.rel[r.rank[1]])}）です。`;
+  }
+
+  st.appendChild(el("div","card-h",`薄い（${CONF.LOW}未満）`)).style.marginTop="14px";
+  if(weak.length){
+    st.appendChild(el("p",null)).innerHTML = sgnList(weak);
+  }else if(r.spread===0){
+    st.appendChild(el("p",null,`${CONF.LOW}を下回る極もありません。`));
+  }else{
+    st.appendChild(el("p",null,
+      `${CONF.LOW}を下回る極はありません。あなたの中でうしろにあるのは `))
+      .innerHTML += sgnList(r.rank.slice(-2).reverse()) + `（自分の平均より ${sgn(r.rel[r.rank[r.rank.length-1]])} / ${sgn(r.rel[r.rank[r.rank.length-2]])}）です。`;
+  }
+
+  if(r.spread>0){  // 8極が同点のときは「1位が強い」と書けない
+    const top=r.rank[0];
+    st.appendChild(el("div","card-h","いちばん強いことの代償")).style.marginTop="14px";
+    st.appendChild(el("p",null,`${top} ${POLES[top].name}が前に出ているぶん、${POLES[top].blind}。`));
+  }
+
+  /* 矛盾 */
+  $("tnum").textContent=String(r.tensions.length);
+  const TL={3:"相反する構えを同時に持っている",4:"相反する構えを同時に持っている",
+            2:"主軸がはっきりしている",1:"主軸がはっきりしている"};
+  const ZERO={special:"どの軸も片側に振り切れている",field:"現象の側に寄っている",
+              green:"どの極もまだ強くは出ていない",standard:"主軸は決まっているが、突出も薄さもない"};
+  $("tlabel").textContent = r.tensions.length
+    ? `${TL[r.tensions.length]}（${r.tensions.join("・")}）`
+    : ZERO[r.profile];
+  const TB={
+    high:"判断は遅くなりますが、どんな問題にも入口があります。どちらを先に出すかを決めておくと速くなります。",
+    mid:"主軸がはっきりしているので速い。ただし主軸が外れた場面で立て直す手が少なくなります。",
+    special:"特化型です。片側に振り切れている分、その方向では誰よりも速い。反対側は他人に借りたほうが早い領域です。",
+    field:"数値は全体に低めですが、現象（P）が高く出ています。言葉にする前の手触りから動く型で、型がないのではなく型の置き場所が違います。",
+    green:"どの極もまだ強く出ていません。特定のやり方が固まっていない状態で、これから何を伸ばすかを選べる位置にいます。"
+  };
+  const TB2={...TB,standard:"突出した極も、極端に薄い極もありません。場面に応じて持ち替えている状態です。"};
+  const tb=$("tbody"); tb.innerHTML="";
+  tb.appendChild(el("p",null, r.tensions.length>=3 ? TB2.high
+    : r.tensions.length>=1 ? TB2.mid : TB2[r.profile]));
+  // どの軸で両極とも高いのか、その中身
+  r.tensions.forEach(ax=>{
+    const q=el("p",null,TENSION[ax]);
+    q.style.cssText="margin:10px 0 0;font-size:13.5px;color:var(--ink-2)";
+    const h=el("b",null,`${ax}：`); h.style.color="var(--ink)";
+    q.insertBefore(h,q.firstChild);
+    tb.appendChild(q);
+  });
+
+  /* 関係 */
+  const comp=complement(r.code), conf=conflict(r.code,r.rank);
+  $("compV").innerHTML=""; $("compV").appendChild(typeLink(comp));
+  $("confV").innerHTML=""; $("confV").appendChild(typeLink(conf));
+
+  updateShare(r);
+  window._r=r;
+}
+
+/* ---- タイプ単独ページ（診断を通さずに16タイプを読む）----
+   結果ページはスコアに依存する（順位・帯・矛盾・境界）が、こちらはコードだけで
+   書けるものしか出さない。両方に同じ文言を出すと「診断した」と誤解されるため、
+   見出しと注記だけを言い換えている */
+const TYPE_CODES = Object.keys(TYPES);
+
+function typeLink(code){
+  const b=el("button","tlink");
+  b.type="button";
+  b.innerHTML=`<span class="tcode">${colorize(code)}</span> ${TYPES[code].name}`;
+  b.addEventListener("click",()=>openType(code));
+  return b;
+}
+function buildTypeGrid(){
+  const g=$("tgrid"); g.innerHTML="";
+  TYPE_CODES.forEach(code=>{
+    const b=el("button","tchip"); b.type="button";
+    const c=el("span","tc-c"); c.innerHTML=colorize(code);
+    b.appendChild(c);
+    b.appendChild(el("span","tc-n",TYPES[code].name));
+    b.addEventListener("click",()=>openType(code));
+    g.appendChild(b);
+  });
+}
+const SCENE_K=["初めてのことを任されたとき","人と意見が割れたとき","うまくいっていたやり方が通じなくなったとき"];
+
+function renderType(code){
+  const t=TYPES[code];
+  $("tpcode").innerHTML=colorize(code);
+  $("tpname").textContent=t.name;
+  $("tpmove").textContent=t.move+"。";
+
+  const tb=$("tpbody"); tb.innerHTML="";
+  (t.body||"").split("｜").forEach(par=>{ if(par) tb.appendChild(el("p",null,par)); });
+
+  /* 4文字の内訳。結果ページの順位表はスコア帯で出し分けるが、ここはスコアが無いので
+     「その極が前に出ている人」の説明＝bands.high を出す */
+  const ax=$("tpaxes"); ax.innerHTML="";
+  code.split("").forEach(k=>{
+    const pl=POLES[k];
+    const row=el("div","axrow "+pl.side);
+    const h=el("div","axrow-h");
+    const c=el("span","c",k); h.appendChild(c);
+    h.appendChild(el("span","n",pl.name));
+    h.appendChild(el("span","ax",pl.axis+" / "+pl.pair+POLES[pl.pair].name+"ではない"));
+    row.appendChild(h);
+    row.appendChild(el("p",null,pl.bands.high));
+    row.appendChild(el("p","bl","代償：" + pl.blind + "。"));
+    ax.appendChild(row);
+  });
+
+  const sx=$("tpsfx"); sx.innerHTML="";
+  ["F","O"].forEach(k=>{
+    const d=el("div",null);
+    d.style.marginBottom = k==="F" ? "10px" : "0";
+    const n=el("b",null,`${code}-${k}（${SUFFIX[k].name}）：`);
+    const q=el("p",null,SUFFIX[k].desc+"。");
+    q.style.cssText="margin:0;font-size:13.5px;line-height:1.8;color:var(--ink-2)";
+    q.insertBefore(n,q.firstChild); n.style.color="var(--ink)";
+    d.appendChild(q); sx.appendChild(d);
+  });
+  sx.appendChild(el("p","note","5文字目は4文字とは別の軸です。同じ4文字でも、決め切る人と決めずに置く人がいます。"))
+    .style.marginTop="10px";
+
+  const sc=$("tpscenes"); sc.innerHTML="";
+  (t.scenes||[]).forEach((line,i)=>{
+    const d=el("div","scene");
+    d.appendChild(el("div","scene-k",SCENE_K[i]));
+    d.appendChild(el("p",null,line));
+    sc.appendChild(d);
+  });
+
+  const pp=$("tppeople"); pp.innerHTML="";
+  (t.people||[]).forEach(pe=>{
+    const d=el("div","pp");
+    d.appendChild(el("div","pp-n",pe.name));
+    d.appendChild(el("div","pp-d",pe.note));
+    pp.appendChild(d);
+  });
+
+  /* 隣（1文字違い）は4つ。どの軸を裏返したのかを添えないと、ただのコード列になる */
+  const nb=$("tpnb"); nb.innerHTML="";
+  code.split("").forEach((ch,i)=>{
+    const arr=code.split(""); arr[i]=flip(ch);
+    const other=arr.join("");
+    const cell=el("div","nb-c");
+    cell.appendChild(el("div","nb-k",POLES[ch].axis+"だけ反転"));
+    const v=el("div","nb-v"); v.appendChild(typeLink(other)); cell.appendChild(v);
+    cell.appendChild(el("div","nb-d",
+      `${ch}${POLES[ch].name}ではなく ${arr[i]}${POLES[arr[i]].name}。${POLES[arr[i]].gloss}。`));
+    nb.appendChild(cell);
+  });
+
+  const cp=$("tpcomp"); cp.innerHTML="";
+  const comp=complement(code);
+  const cell=el("div","nb-c");
+  cell.appendChild(el("div","nb-k","4軸すべて反転"));
+  const v=el("div","nb-v"); v.appendChild(typeLink(comp)); cell.appendChild(v);
+  cell.appendChild(el("div","nb-d","このタイプの盲点を全部持っている相手です。話が通じない代わりに、届かないところに手が届きます。"));
+  cp.appendChild(cell);
+
+  window._t=code;
+}
+function typeURL(code){
+  const url=new URL(location.href);
+  url.hash=""; url.search="";
+  url.searchParams.set("t",code);
+  return url.toString();
+}
+function openType(code){
+  if(!TYPES[code]) return false;
+  renderType(code);
+  try{ history.replaceState(null,"",typeURL(code)); }catch(e){ /* sandbox では URL を書き換えられない */ }
+  show("typepage");
+  return true;
+}
+
+function shareURL(){
+  const url=new URL(location.href);
+  url.hash="";
+  url.searchParams.set("v","2");
+  url.searchParams.set("a",ans.join(""));
+  if(userMBTI) url.searchParams.set("m",userMBTI); else url.searchParams.delete("m");
+  return url.toString();
+}
+function updateShare(r){
+  const t=TYPES[r.code], sfx=SUFFIX[r.suffix];
+  const head = userMBTI ? `${userMBTI} × ${r.code}-${r.suffix}` : `${r.code}-${r.suffix}`;
+  const txt = `#思考法タイプ ${head}\n${t.name}・${sfx.name}\n${t.move}\n\n1位 ${r.rank[0]}${POLES[r.rank[0]].name}（${r.raw[r.rank[0]]}）／抱えている矛盾 ${r.tensions.length}\n${shareURL()}`;
+  $("sharetext").textContent=txt;
+  $("toX").href="https://twitter.com/intent/tweet?text="+encodeURIComponent(txt);
+}
+async function copy(text,btn){
+  try{ await navigator.clipboard.writeText(text); }
+  catch(e){
+    const ta=document.createElement("textarea"); ta.value=text; ta.style.position="fixed"; ta.style.opacity="0";
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand("copy"); }catch(_){}
+    ta.remove();
+  }
+  const old=btn.textContent; btn.textContent="コピーしました"; setTimeout(()=>btn.textContent=old,1400);
+}
+
+/* ---- イベント ---- */
+$("start").addEventListener("click",()=>{ order=shuffleOrder(); idx=0; renderQ(); show("quiz"); });
+$("back").addEventListener("click",()=>{ if(idx>0){ idx--; renderQ(); } });
+$("again").addEventListener("click",()=>{
+  ans=new Array(Q.length).fill(null); order=shuffleOrder(); idx=0;
+  try{ history.replaceState(null,"",location.pathname); }catch(e){}
+  show("intro");
+});
+$("copyText").addEventListener("click",e=>copy($("sharetext").textContent,e.currentTarget));
+/* タイプ索引：コード入力と一覧 */
+function lookupType(){
+  const raw=$("tlook").value.trim().toUpperCase().replace(/[^A-Z]/g,"");
+  const code=raw.slice(0,4);
+  const ok=openType(code);
+  $("tlookErr").hidden=ok;
+  if(ok) $("tlook").value="";
+}
+$("tlookGo").addEventListener("click",lookupType);
+$("tlook").addEventListener("keydown",e=>{ if(e.key==="Enter") lookupType(); });
+$("tlook").addEventListener("input",()=>{ $("tlookErr").hidden=true; });
+$("tpBack").addEventListener("click",()=>{
+  try{ history.replaceState(null,"",location.pathname); }catch(e){}
+  show("intro");
+});
+$("tpStart").addEventListener("click",()=>{
+  ans=new Array(Q.length).fill(null); order=shuffleOrder(); idx=0;
+  try{ history.replaceState(null,"",location.pathname); }catch(e){}
+  renderQ(); show("quiz");
+});
+$("tpCopy").addEventListener("click",e=>copy(typeURL(window._t),e.currentTarget));
+$("copyLink").addEventListener("click",e=>copy(shareURL(),e.currentTarget));
+$("mbtiSet").addEventListener("click",()=>{
+  const v=$("mbti").value.trim().toUpperCase();
+  userMBTI = /^[EI][NS][FT][JP]$/.test(v) ? v : "";
+  $("mbti").value=userMBTI;
+  if(window._r){ updateShare(window._r); pushURL(); }
+});
+document.addEventListener("keydown",e=>{
+  if($("quiz").hidden) return;
+  if(e.key>="1"&&e.key<="5"){ answer(Number(e.key)-1); }
+  else if(e.key==="ArrowLeft"&&idx>0){ idx--; renderQ(); }
+  else if(e.key==="ArrowRight"&&ans[order[idx]]!=null&&idx<Q.length-1){ idx++; renderQ(); }
+});
+
+/* ---- 起動（URLからの復元）---- */
+buildLikert();
+buildTypeGrid();
+(function boot(){
+  const p=new URLSearchParams(location.search);
+  const a=p.get("a"), m=(p.get("m")||"").toUpperCase();
+  // ?t=CALR は診断を通さずにタイプページを開く。?a= があれば結果を優先する
+  const t=(p.get("t")||"").toUpperCase().slice(0,4);
+  if(!a && TYPES[t]){ renderType(t); show("typepage"); return; }
+  // v=1 は7段階（0〜6）。5段階へ移行したので数字の意味が変わり、再計算できない
+  if(a && a.length===Q.length && /^[0-4]+$/.test(a) && p.get("v")!=="1"){
+    ans=a.split("").map(Number);
+    if(/^[EI][NS][FT][JP]$/.test(m)){ userMBTI=m; $("mbti").value=m; }
+    renderResult(score(ans));
+    show("result");
+  }
+})();
+</script>
+</body>
+</html>
