@@ -139,6 +139,24 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(-
 .rbody p:last-child{margin-bottom:0}
 .sc.a .sc-n,.sc.a .sc-n .c{color:var(--pole-a)}
 .sc.b .sc-n,.sc.b .sc-n .c{color:var(--pole-b)}
+/* 長文（types/<code>.json を遅延ロード）。16タイプ分を同梱すると20万字になるので別ファイル */
+.longbar{margin:6px 0 0}
+.long{margin-top:4px}
+.lch{border-top:1px solid var(--rule);padding-top:20px;margin-top:28px}
+.lch:first-child{margin-top:10px;border-top:none;padding-top:0}
+.lch-n{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:var(--ink-3);display:block;margin-bottom:5px}
+.lch-t{font-family:var(--display);font-weight:700;font-size:clamp(17px,3.2vw,21px);line-height:1.35;margin:0 0 14px}
+.long p{font-size:14.5px;line-height:1.9;margin:0 0 14px;max-width:64ch}
+.lh{font-family:var(--body);font-weight:700;font-size:14.5px;color:var(--ink);margin:24px 0 8px;letter-spacing:0}
+.lq{font-family:var(--display);font-weight:700;font-size:clamp(15px,2.6vw,17.5px);line-height:1.7;color:var(--pole-a);
+  border-left:2px solid var(--pole-a);padding:3px 0 3px 16px;margin:20px 0;max-width:56ch}
+.lscene{background:var(--surface);border:1px solid var(--rule);padding:14px 16px;margin:20px 0}
+.lscene::before{content:"場面";font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--ink-3);display:block;margin-bottom:6px}
+.lscene p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.85}
+.ll{border-top:1px solid var(--rule);margin:16px 0}
+.ll-i{border-bottom:1px solid var(--rule-soft);padding:12px 0}
+.ll-k{font-family:var(--display);font-weight:700;font-size:15px}
+.ll-v{font-size:13.5px;color:var(--ink-2);line-height:1.8;margin-top:3px}
 .card{border:1px solid var(--rule);background:var(--surface);padding:16px 18px;margin:0 0 14px}
 .card-h{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:8px}
 .card p:last-child,.card ul:last-child{margin-bottom:0}
@@ -300,6 +318,13 @@ footer{margin-top:56px;border-top:2px solid var(--ink);padding-top:14px;font-fam
   <div class="people" id="rpeople"></div>
   <p class="note" style="margin-top:10px">この診断の枠組みで読んだ場合の見立てです。本人がそう名乗ったわけではありません。</p>
 
+
+  <div id="rlongwrap" hidden>
+    <h3>この型をもっと詳しく読む</h3>
+    <div class="longbar" id="rlongbar"></div>
+    <div class="long" id="rlong"></div>
+  </div>
+
   <h3>他のタイプとの関係</h3>
   <div class="rel">
     <div class="rel-c"><span class="rel-k">補完</span><div class="rel-v" id="compV"></div><div class="rel-d">あなたの盲点を全部持っている相手（4軸すべて反転）</div></div>
@@ -356,6 +381,13 @@ footer{margin-top:56px;border-top:2px solid var(--ink);padding-top:14px;font-fam
   <h3>同じ型の4人</h3>
   <div class="people" id="tppeople"></div>
   <p class="note" style="margin-top:10px">この診断の枠組みで読んだ場合の見立てです。本人がそう名乗ったわけではありません。</p>
+
+
+  <div id="tplongwrap" hidden>
+    <h3>この型をもっと詳しく読む</h3>
+    <div class="longbar" id="tplongbar"></div>
+    <div class="long" id="tplong"></div>
+  </div>
 
   <h3>隣のタイプ</h3>
   <div class="nb" id="tpnb"></div>
@@ -886,6 +918,8 @@ function renderResult(r){
   $("compV").innerHTML=""; $("compV").appendChild(typeLink(comp));
   $("confV").innerHTML=""; $("confV").appendChild(typeLink(conf));
 
+  setupLong("rlongwrap","rlongbar","rlong",r.code);
+
   updateShare(r);
   window._r=r;
 }
@@ -914,6 +948,67 @@ function buildTypeGrid(){
     g.appendChild(b);
   });
 }
+/* ---- タイプ長文（types/<code>.json）----
+   16タイプ分で約20万字になるので index.html には同梱せず、読むと言った人にだけ取りに行く。
+   まだ書けていないタイプは LONG_READY に入っていないので、導線ごと出さない（404を見せない）。 */
+const LONG_READY = ["CSLX"];
+const longCache = {};
+
+async function fetchOK(u){ const r = await fetch(u,{cache:"no-cache"}); if(!r.ok) throw new Error(r.status); return r; }
+
+function setupLong(wrapId, barId, boxId, code){
+  const wrap=$(wrapId), bar=$(barId), box=$(boxId);
+  box.innerHTML=""; bar.innerHTML="";
+  wrap.hidden = !LONG_READY.includes(code);
+  if(wrap.hidden) return;
+  const LABEL="この型を詳しく読む（約12,000字）";
+  const b=el("button","btn ghost sm",LABEL);
+  const note=el("p","note","9章あります。読み切るのに20〜30分かかります。");
+  note.style.margin="8px 0 0";
+  b.onclick=async()=>{
+    b.disabled=true; b.textContent="読み込み中…";
+    try{
+      const data = longCache[code] || (longCache[code] = await (await fetchOK("types/"+code+".json")).json());
+      renderLong(box, data);
+      bar.innerHTML="";
+    }catch(e){
+      b.disabled=false; b.textContent=LABEL;
+      note.textContent="読み込めませんでした。通信を確かめて、もう一度押してください。";
+      note.style.color="var(--flag)";
+    }
+  };
+  bar.appendChild(b); bar.appendChild(note);
+}
+
+/* ブロックは4種類だけ：文字列＝段落／{h}＝小見出し／{q}＝抜き文／{scene}＝場面／{list}＝項目 */
+function renderLong(box, data){
+  box.innerHTML="";
+  (data.chapters||[]).forEach((ch,i)=>{
+    const sec=el("section","lch");
+    const h=el("h2","lch-t");
+    h.appendChild(el("span","lch-n",`第${i+1}章 / ${data.chapters.length}`));
+    h.appendChild(document.createTextNode(ch.t));
+    sec.appendChild(h);
+    (ch.blocks||[]).forEach(b=>{
+      if(typeof b==="string"){ sec.appendChild(el("p",null,b)); return; }
+      if(b.h!=null){ sec.appendChild(el("div","lh",b.h)); return; }
+      if(b.q!=null){ sec.appendChild(el("div","lq",b.q)); return; }
+      if(b.scene!=null){ const d=el("div","lscene"); d.appendChild(el("p",null,b.scene)); sec.appendChild(d); return; }
+      if(b.list){
+        const d=el("div","ll");
+        b.list.forEach(it=>{
+          const r=el("div","ll-i");
+          r.appendChild(el("div","ll-k",it.k));
+          r.appendChild(el("div","ll-v",it.v));
+          d.appendChild(r);
+        });
+        sec.appendChild(d);
+      }
+    });
+    box.appendChild(sec);
+  });
+}
+
 const SCENE_K=["初めてのことを任されたとき","人と意見が割れたとき","うまくいっていたやり方が通じなくなったとき"];
 
 function renderType(code){
@@ -969,6 +1064,8 @@ function renderType(code){
     d.appendChild(el("div","pp-d",pe.note));
     pp.appendChild(d);
   });
+
+  setupLong("tplongwrap","tplongbar","tplong",code);
 
   /* 隣（1文字違い）は4つ。どの軸を裏返したのかを添えないと、ただのコード列になる */
   const nb=$("tpnb"); nb.innerHTML="";
