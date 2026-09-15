@@ -142,7 +142,14 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(-
 /* 長文（types/<code>.json を遅延ロード）。16タイプ分を同梱すると20万字になるので別ファイル */
 .longbar{margin:6px 0 0}
 .long{margin-top:4px}
-.lch{border-top:1px solid var(--rule);padding-top:20px;margin-top:28px}
+.ltoc{border:1px solid var(--rule);background:var(--surface);padding:14px 16px;margin:10px 0 4px}
+.ltoc-h{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--ink-3);margin-bottom:8px}
+.ltoc-l{margin:0;padding-left:1.4em}
+.ltoc-l li{margin:0 0 5px}
+.ltoc-l li::marker{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.ltoc-l a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule);font-size:13.5px;line-height:1.7}
+.ltoc-l a:hover{border-bottom-color:var(--pole-a);color:var(--pole-a)}
+.lch{border-top:1px solid var(--rule);padding-top:20px;margin-top:28px;scroll-margin-top:12px}
 .lch:first-child{margin-top:10px;border-top:none;padding-top:0}
 .lch-n{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:var(--ink-3);display:block;margin-bottom:5px}
 .lch-t{font-family:var(--display);font-weight:700;font-size:clamp(17px,3.2vw,21px);line-height:1.35;margin:0 0 14px}
@@ -949,7 +956,7 @@ function buildTypeGrid(){
   });
 }
 /* ---- タイプ長文（types/<code>.json）----
-   16タイプ分で約20万字になるので index.html には同梱せず、読むと言った人にだけ取りに行く。
+   16タイプ分で約14万字になるので index.html には同梱せず、読むと言った人にだけ取りに行く。
    まだ書けていないタイプは LONG_READY に入っていないので、導線ごと出さない（404を見せない）。 */
 const LONG_READY = ["CSLX"];
 const longCache = {};
@@ -961,9 +968,9 @@ function setupLong(wrapId, barId, boxId, code){
   box.innerHTML=""; bar.innerHTML="";
   wrap.hidden = !LONG_READY.includes(code);
   if(wrap.hidden) return;
-  const LABEL="この型を詳しく読む（約12,000字）";
+  const LABEL="この型を詳しく読む（約8,500字）";
   const b=el("button","btn ghost sm",LABEL);
-  const note=el("p","note","9章あります。読み切るのに20〜30分かかります。");
+  const note=el("p","note","9章あります。読み切るのに15〜20分かかります。");
   note.style.margin="8px 0 0";
   b.onclick=async()=>{
     b.disabled=true; b.textContent="読み込み中…";
@@ -983,8 +990,19 @@ function setupLong(wrapId, barId, boxId, code){
 /* ブロックは4種類だけ：文字列＝段落／{h}＝小見出し／{q}＝抜き文／{scene}＝場面／{list}＝項目 */
 function renderLong(box, data){
   box.innerHTML="";
+  /* 目次。全部で何章あるか先に見せないと、8,500字は「終わりの見えない一枚」として読まれる */
+  const toc=el("nav","ltoc");
+  toc.appendChild(el("div","ltoc-h","目次"));
+  const ol=el("ol","ltoc-l");
   (data.chapters||[]).forEach((ch,i)=>{
-    const sec=el("section","lch");
+    const li=el("li");
+    const a=el("a",null,ch.t); a.href="#lch"+i;
+    a.onclick=e=>{ e.preventDefault(); const t=$("lch"+i); if(t) t.scrollIntoView({behavior:"smooth",block:"start"}); };
+    li.appendChild(a); ol.appendChild(li);
+  });
+  toc.appendChild(ol); box.appendChild(toc);
+  (data.chapters||[]).forEach((ch,i)=>{
+    const sec=el("section","lch"); sec.id="lch"+i;
     const h=el("h2","lch-t");
     h.appendChild(el("span","lch-n",`第${i+1}章 / ${data.chapters.length}`));
     h.appendChild(document.createTextNode(ch.t));
