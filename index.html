@@ -958,7 +958,7 @@ function buildTypeGrid(){
 /* ---- タイプ長文（types/<code>.json）----
    16タイプ分で約14万字になるので index.html には同梱せず、読むと言った人にだけ取りに行く。
    まだ書けていないタイプは LONG_READY に入っていないので、導線ごと出さない（404を見せない）。 */
-const LONG_READY = ["CSLX","PAWR"];
+const LONG_READY = ["CALR","CALX","CAWR","CAWX","CSLR","CSLX","CSWR","CSWX","PALR","PALX","PAWR","PAWX","PSLR","PSLX","PSWR","PSWX"];
 const longCache = {};
 
 async function fetchOK(u){ const r = await fetch(u,{cache:"no-cache"}); if(!r.ok) throw new Error(r.status); return r; }
