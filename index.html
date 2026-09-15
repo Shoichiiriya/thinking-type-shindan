@@ -958,7 +958,7 @@ function buildTypeGrid(){
 /* ---- タイプ長文（types/<code>.json）----
    16タイプ分で約14万字になるので index.html には同梱せず、読むと言った人にだけ取りに行く。
    まだ書けていないタイプは LONG_READY に入っていないので、導線ごと出さない（404を見せない）。 */
-const LONG_READY = ["CSLX"];
+const LONG_READY = ["CSLX","PAWR"];
 const longCache = {};
 
 async function fetchOK(u){ const r = await fetch(u,{cache:"no-cache"}); if(!r.ok) throw new Error(r.status); return r; }
@@ -968,7 +968,7 @@ function setupLong(wrapId, barId, boxId, code){
   box.innerHTML=""; bar.innerHTML="";
   wrap.hidden = !LONG_READY.includes(code);
   if(wrap.hidden) return;
-  const LABEL="この型を詳しく読む（約8,500字）";
+  const LABEL="この型を詳しく読む（約8,000字）";
   const b=el("button","btn ghost sm",LABEL);
   const note=el("p","note","9章あります。読み切るのに15〜20分かかります。");
   note.style.margin="8px 0 0";
