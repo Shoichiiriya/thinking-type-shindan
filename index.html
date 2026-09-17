@@ -145,10 +145,18 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(-
 .scene:first-child{border-top:1px solid var(--rule)}
 .scene-k{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--ink-3);margin-bottom:5px}
 .scene p{margin:0;font-size:14.5px;line-height:1.85}
-.people{border-top:1px solid var(--rule)}
-.pp{border-bottom:1px solid var(--rule-soft);padding:12px 0}
+/* 同じ型の4人。上にキャラ画像が並ぶページなので、罫線の一覧だとここだけ硬く浮く。
+   左の帯はその型の群色（--g は .people に付ける g-xx で決まる） */
+.people{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pp{position:relative;background:var(--surface);border:1px solid var(--rule-soft);
+  border-radius:var(--r-sm);padding:12px 14px 12px 17px;overflow:hidden}
+.pp::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--g,var(--rule))}
 .pp-n{font-family:var(--display);font-weight:700;font-size:15.5px}
 .pp-d{font-size:13px;color:var(--ink-2);line-height:1.75;margin-top:3px}
+.people.g-ca{--g:var(--g-ca)}
+.people.g-cs{--g:var(--g-cs)}
+.people.g-pa{--g:var(--g-pa)}
+.people.g-ps{--g:var(--g-ps)}
 .rbody{margin:14px 0 0;max-width:62ch}
 .rbody p{margin:0 0 10px;font-size:14.5px;line-height:1.8}
 .rbody p:last-child{margin-bottom:0}
@@ -279,6 +287,7 @@ footer{margin-top:56px;border-top:2px solid var(--ink);padding-top:14px;font-fam
   .rface{width:min(66vw,264px);height:auto;aspect-ratio:1/1}
   .nb-face{width:64px;height:64px}
   .nb{grid-template-columns:1fr}
+  .people{grid-template-columns:1fr}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -888,7 +897,7 @@ function renderResult(r){
   });
 
   /* 同じ型の4人。断定で書く（iriya指定）。注記は下に1行だけ置く */
-  const rp=$("rpeople"); rp.innerHTML="";
+  const rp=$("rpeople"); rp.innerHTML=""; rp.className="people g-"+r.code.slice(0,2).toLowerCase();
   (t.people||[]).forEach(pe=>{
     const d=el("div","pp");
     d.appendChild(el("div","pp-n",pe.name));
@@ -1159,7 +1168,7 @@ function renderType(code){
     sc.appendChild(d);
   });
 
-  const pp=$("tppeople"); pp.innerHTML="";
+  const pp=$("tppeople"); pp.innerHTML=""; pp.className="people g-"+code.slice(0,2).toLowerCase();
   (t.people||[]).forEach(pe=>{
     const d=el("div","pp");
     d.appendChild(el("div","pp-n",pe.name));
