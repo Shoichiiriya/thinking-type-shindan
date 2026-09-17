@@ -132,6 +132,13 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(-
 .rmove{font-size:15px;color:var(--ink-2);margin:0 0 4px;max-width:60ch}
 .border-flag{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--flag);
   border:1px solid var(--flag);border-radius:var(--pill);padding:2px 11px;margin-top:8px}
+/* 確度の注記。境界が2軸以上／8極すべてが高いときに、コードを信用しないよう先に言う（2026-09-17・β1件目のCAWRで実測） */
+.rconf{border:1px solid var(--flag);padding:11px 14px;margin:12px 0 16px;font-size:13.5px;line-height:1.85;
+  color:var(--ink);max-width:62ch}
+.rconf b{color:var(--flag)}
+.rconf .rconf-h{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--flag);display:block;margin-bottom:5px}
+.rconf p{margin:0 0 6px;font-size:13.5px;line-height:1.85}
+.rconf p:last-child{margin-bottom:0}
 .scales{border-top:1px solid var(--rule);margin-top:6px}
 .sc{border-bottom:1px solid var(--rule-soft);padding:10px 0;display:grid;grid-template-columns:26px 88px 1fr 44px;gap:10px;align-items:center}
 .sc-r{font-family:var(--mono);font-size:11.5px;color:var(--ink-3)}
@@ -181,7 +188,7 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(-
 .lq{font-family:var(--display);font-weight:700;font-size:clamp(15px,2.6vw,17.5px);line-height:1.7;color:var(--pole-a);
   border-left:2px solid var(--pole-a);padding:3px 0 3px 16px;margin:20px 0;max-width:56ch}
 .lscene{background:var(--surface);border:1px solid var(--rule);padding:14px 16px;margin:20px 0;border-radius:var(--r)}
-.lscene::before{content:"場面";font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--ink-3);display:block;margin-bottom:6px}
+.lscene::before{content:"場面 — 読み飛ばし可";font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--ink-3);display:block;margin-bottom:6px}
 .lscene p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.85}
 .ll{border-top:1px solid var(--rule);margin:16px 0}
 .ll-i{border-bottom:1px solid var(--rule-soft);padding:12px 0}
@@ -328,6 +335,11 @@ footer{margin-top:56px;border-top:2px solid var(--ink);padding-top:14px;font-fam
 
   <p style="margin-top:22px"><button class="btn" id="start">診断をはじめる</button></p>
 
+  <p id="resume" hidden style="margin-top:12px">
+    <button class="btn ghost" id="resumeGo">前回の結果を見る</button>
+    <span class="hint">この端末に残っている直前の回答から結果を出しなおします</span>
+  </p>
+
   <h3 style="margin-top:34px">16タイプを読む</h3>
   <p style="margin:0 0 4px;font-size:14px;color:var(--ink-2)">コードを入れるか、下から選ぶと、そのタイプの説明だけを読めます。</p>
   <div class="tlookup">
@@ -370,6 +382,7 @@ footer{margin-top:56px;border-top:2px solid var(--ink);padding-top:14px;font-fam
       <h2 class="rname" id="rname"></h2>
     </div>
   </div>
+  <div class="rconf" id="rconf" hidden></div>
   <p class="rmove" id="rmove"></p>
   <div class="rbody" id="rbody"></div>
   <div id="rflags"></div>
@@ -513,7 +526,9 @@ const CONF = {
                    // ＝4問のうち1問が1段階ズレただけで逆転する帯
   SUFFIX_MID: 50,  // F/O の分割点
   GREEN: 40,       // 8極の平均がこれ未満なら「伸びしろ型」
-  FLAT_SPREAD: 15  // 8極の最高と最低の差がこれ未満なら「順位が入れ替わりやすい」と添える（O-8）
+  FLAT_SPREAD: 30  // 8極の最高と最低の差がこれ未満なら「順位が入れ替わりやすい」と添える（O-8）
+                   // 2026-09-17: 15→30。βで spread 25（8極が75〜100）の回答が来て、
+                   // 順位が実質無意味なのに注記が出なかった。25を拾える値まで上げた
 };
 
 /* --- 8極 --- */
@@ -783,6 +798,16 @@ function score(ans){
 function sgn(v){ return v>=0? "+"+v : String(v); }
 function flip(c){ return POLES[c].pair; }
 function complement(code){ return code.split("").map(flip).join(""); }
+/* 境界の軸を全通り入れ替えた候補。境界が n 軸なら 2^n 型ある（2026-09-17） */
+function borderCandidates(code, alts){
+  let list=[code];
+  (alts||[]).forEach(a=>{
+    const i=[...code].findIndex((ch,j)=>ch!==a.code[j]);
+    if(i<0) return;
+    list=list.concat(list.map(c=>c.slice(0,i)+a.code[i]+c.slice(i+1)));
+  });
+  return list;
+}
 function conflict(code,rank){
   const top=rank[0], ax=POLES[top].axis;
   return code.split("").map(c=>POLES[c].axis===ax? flip(c):c).join("");
@@ -865,10 +890,17 @@ function answer(v){
     else finish();
   },140);
 }
+/* 回答をこの端末に残す。結果URLはページを閉じると消えるので、
+   「あとでリンクを送って」が成立しない（2026-09-17にβ回答1件が実際に消えた）*/
+function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){ /* プライベートモード等 */ } }
+function saveAns(){ lsSet("tts.ans",ans.join("")); lsSet("tts.m",userMBTI||""); }
+
 function pushURL(){
   try{ history.replaceState(null,"",shareURL()); }catch(e){ /* sandbox では URL を書き換えられない */ }
 }
 function finish(){
+  saveAns();
   pushURL();
   renderResult(score(ans));
   show("result");
@@ -904,6 +936,31 @@ function renderResult(r){
     d.appendChild(el("div","pp-d",pe.note));
     rp.appendChild(d);
   });
+
+  /* 確度の注記。境界が2軸以上あるとき、コードは1問差で入れ替わるので
+     「顔・名前・8千字」を信用させる前に先に言う。β1件目（CAWR-O）が
+     材料14対14・決め手12対13・使い道14対13で、同じ確度の候補が8型あった。 */
+  const rconf=$("rconf"); rconf.innerHTML=""; rconf.hidden=true;
+  {
+    const PK=Object.keys(POLES);
+    const allHigh = PK.every(k=>r.raw[k]>=CONF.HIGH);
+    const nb=r.alts.length;
+    if(allHigh || nb>=2){
+      rconf.hidden=false;
+      rconf.appendChild(el("span","rconf-h","この結果の確かさ"));
+      const add=html=>{ const q=el("p"); q.innerHTML=html; rconf.appendChild(q); };
+      if(allHigh) add(`8つの極が<b>すべて${CONF.HIGH}以上</b>です。どの設問にも「あてはまる」と答えた場合も同じ形になります。`);
+      if(nb>=2){
+        const cand=borderCandidates(r.code,r.alts);
+        add(`境界の軸が<b>${nb}つ</b>あり、同じ確かさの候補が<b>${cand.length}型</b>あります`
+          + (cand.length>=16 ? "（16型すべて）。" : `（${cand.join(" / ")}）。`)
+          + `<b>この回答では4文字コードは決まっていません。</b>`);
+        add("コードと、下に出るタイプ名・4人・長文は、候補のうちの1つを表示しているだけです。先に「8つの思考法の順位」と境界の軸を見てください。");
+      }else{
+        add("4文字コードよりも、下の「8つの思考法の順位」と「抱えている矛盾」を見てください。");
+      }
+    }
+  }
 
   const flags=$("rflags"); flags.innerHTML="";
   r.alts.forEach(a=>{
@@ -988,7 +1045,7 @@ function renderResult(r){
     ? `${TL[r.tensions.length]}（${r.tensions.join("・")}）`
     : ZERO[r.profile];
   const TB={
-    high:"判断は遅くなりますが、どんな問題にも入口があります。どちらを先に出すかを決めておくと速くなります。",
+    high:"3つ以上の軸で両側が高く出ています。これは万能ということではなく、どちらの構えもまだ選び取られていない状態です。4文字コードは測るたびに入れ替わります。軸ごとにどちらを先に出すかを決めると、型が固まります。",
     mid:"主軸がはっきりしているので速い。ただし主軸が外れた場面で立て直す手が少なくなります。",
     special:"特化型です。片側に振り切れている分、その方向では誰よりも速い。反対側は他人に借りたほうが早い領域です。",
     field:"数値は全体に低めですが、現象（P）が高く出ています。言葉にする前の手触りから動く型で、型がないのではなく型の置き場所が違います。",
@@ -1062,7 +1119,7 @@ function setupLong(wrapId, barId, boxId, code){
   if(wrap.hidden) return;
   const LABEL="この型を詳しく読む（約8,000字）";
   const b=el("button","btn ghost sm",LABEL);
-  const note=el("p","note","9章あります。読み切るのに15〜20分かかります。");
+  const note=el("p","note","9章あります。読み切るのに15〜20分かかります。枠で囲んだ「場面」は具体例なので、読み飛ばしても筋は通ります。");
   note.style.margin="8px 0 0";
   b.onclick=async()=>{
     b.disabled=true; b.textContent="読み込み中…";
@@ -1282,7 +1339,7 @@ $("mbtiSet").addEventListener("click",()=>{
   const v=$("mbti").value.trim().toUpperCase();
   userMBTI = /^[EI][NS][FT][JP]$/.test(v) ? v : "";
   $("mbti").value=userMBTI;
-  if(window._r){ updateShare(window._r); pushURL(); }
+  if(window._r){ updateShare(window._r); saveAns(); pushURL(); }
 });
 document.addEventListener("keydown",e=>{
   if($("quiz").hidden) return;
@@ -1297,6 +1354,21 @@ buildTypeGrid();
 (function boot(){
   const p=new URLSearchParams(location.search);
   const a=p.get("a"), m=(p.get("m")||"").toUpperCase();
+  /* 結果URLを送る前にページを閉じても戻れるようにする。?a= があるときは
+     他人の結果かもしれないので保存しない（保存は finish() のときだけ）*/
+  if(!a){
+    const sa=lsGet("tts.ans"), sm=(lsGet("tts.m")||"").toUpperCase();
+    if(sa && sa.length===Q.length && /^[0-4]+$/.test(sa)){
+      $("resume").hidden=false;
+      $("resumeGo").addEventListener("click",()=>{
+        ans=sa.split("").map(Number);
+        if(/^[EI][NS][FT][JP]$/.test(sm)){ userMBTI=sm; $("mbti").value=sm; }
+        renderResult(score(ans));
+        pushURL();
+        show("result");
+      });
+    }
+  }
   // ?t=CALR は診断を通さずにタイプページを開く。?a= があれば結果を優先する
   const t=(p.get("t")||"").toUpperCase().slice(0,4);
   if(!a && TYPES[t]){ renderType(t); show("typepage"); return; }
