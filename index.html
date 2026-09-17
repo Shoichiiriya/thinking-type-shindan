@@ -231,10 +231,17 @@ footer{margin-top:56px;border-top:2px solid var(--ink);padding-top:14px;font-fam
 .lineup img:first-child{margin-left:0}
 
 /* 結果・タイプページの頭。画像は正方形のまま角丸（円で切ると小道具が欠ける） */
-.rhero{display:flex;gap:18px;align-items:center;margin-bottom:10px}
-.rface{width:152px;height:152px;flex:none;display:block;border-radius:var(--r);
+.rhero{display:flex;gap:22px;align-items:center;margin-bottom:12px}
+.rface{width:232px;height:232px;flex:none;display:block;border-radius:var(--r);
   background:var(--tile);border:1px solid var(--tile-rule)}
 .rhero-t{min-width:0}
+
+/* 隣・正反対・補完・衝突。相手の顔が出ないとコードの羅列になる */
+.nb-face{width:76px;height:76px;flex:none;display:block;border-radius:var(--r-sm);
+  background:var(--tile);border:1px solid var(--tile-rule)}
+.nb-c,.rel-c{display:flex;gap:12px;align-items:flex-start}
+.nb-t,.rel-t{min-width:0}
+#tpcomp .nb-face{width:104px;height:104px}
 .tnav{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
 .axrow{border-bottom:1px solid var(--rule-soft);padding:12px 0}
 .axrow:first-child{border-top:1px solid var(--rule)}
@@ -268,8 +275,9 @@ footer{margin-top:56px;border-top:2px solid var(--ink);padding-top:14px;font-fam
   .rel{grid-template-columns:1fr}
   .ab{grid-template-columns:1fr;gap:2px}
   .tgrid{grid-template-columns:repeat(2,1fr);gap:8px}
-  .rhero{flex-direction:column;align-items:flex-start;gap:10px}
-  .rface{width:168px;height:168px}
+  .rhero{flex-direction:column;align-items:flex-start;gap:12px}
+  .rface{width:min(66vw,264px);height:auto;aspect-ratio:1/1}
+  .nb-face{width:64px;height:64px}
   .nb{grid-template-columns:1fr}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
@@ -387,8 +395,14 @@ footer{margin-top:56px;border-top:2px solid var(--ink);padding-top:14px;font-fam
 
   <h3>他のタイプとの関係</h3>
   <div class="rel">
-    <div class="rel-c"><span class="rel-k">補完</span><div class="rel-v" id="compV"></div><div class="rel-d">あなたの盲点を全部持っている相手（4軸すべて反転）</div></div>
-    <div class="rel-c"><span class="rel-k">衝突</span><div class="rel-v" id="confV"></div><div class="rel-d">近いのに一点だけ噛み合わない相手（最も強い軸だけ反転）</div></div>
+    <div class="rel-c">
+      <img class="nb-face" id="compFace" src="" alt="" width="192" height="192" decoding="async">
+      <div class="rel-t"><span class="rel-k">補完</span><div class="rel-v" id="compV"></div><div class="rel-d">あなたの盲点を全部持っている相手（4軸すべて反転）</div></div>
+    </div>
+    <div class="rel-c">
+      <img class="nb-face" id="confFace" src="" alt="" width="192" height="192" decoding="async">
+      <div class="rel-t"><span class="rel-k">衝突</span><div class="rel-v" id="confV"></div><div class="rel-d">近いのに一点だけ噛み合わない相手（最も強い軸だけ反転）</div></div>
+    </div>
   </div>
 
   <h3>MBTIと重ねる</h3>
@@ -772,6 +786,11 @@ function conflict(code,rank){
    ============================================================ */
 const $ = id => document.getElementById(id);
 const el = (tag,cls,txt)=>{const e=document.createElement(tag); if(cls)e.className=cls; if(txt!=null)e.textContent=txt; return e;};
+const faceURL = code => "assets/characters/"+code+"_s.webp";
+const faceImg = code => {
+  const i=el("img","nb-face"); i.src=faceURL(code); i.alt=""; i.width=192; i.height=192;
+  i.decoding="async"; return i;
+};
 const colorize = code => code.split("").map(c=>`<span class="${POLES[c].side==="a"?"pa":"pb"}">${c}</span>`).join("");
 
 let ans = new Array(Q.length).fill(null);
@@ -983,6 +1002,7 @@ function renderResult(r){
   const comp=complement(r.code), conf=conflict(r.code,r.rank);
   $("compV").innerHTML=""; $("compV").appendChild(typeLink(comp));
   $("confV").innerHTML=""; $("confV").appendChild(typeLink(conf));
+  $("compFace").src=faceURL(comp); $("confFace").src=faceURL(conf);
 
   setupLong("rlongwrap","rlongbar","rlong",r.code);
 
@@ -1155,19 +1175,25 @@ function renderType(code){
     const arr=code.split(""); arr[i]=flip(ch);
     const other=arr.join("");
     const cell=el("div","nb-c");
-    cell.appendChild(el("div","nb-k",POLES[ch].axis+"だけ反転"));
-    const v=el("div","nb-v"); v.appendChild(typeLink(other)); cell.appendChild(v);
-    cell.appendChild(el("div","nb-d",
+    cell.appendChild(faceImg(other));
+    const t=el("div","nb-t");
+    t.appendChild(el("div","nb-k",POLES[ch].axis+"だけ反転"));
+    const v=el("div","nb-v"); v.appendChild(typeLink(other)); t.appendChild(v);
+    t.appendChild(el("div","nb-d",
       `${ch}${POLES[ch].name}ではなく ${arr[i]}${POLES[arr[i]].name}。${POLES[arr[i]].gloss}。`));
+    cell.appendChild(t);
     nb.appendChild(cell);
   });
 
   const cp=$("tpcomp"); cp.innerHTML="";
   const comp=complement(code);
   const cell=el("div","nb-c");
-  cell.appendChild(el("div","nb-k","4軸すべて反転"));
-  const v=el("div","nb-v"); v.appendChild(typeLink(comp)); cell.appendChild(v);
-  cell.appendChild(el("div","nb-d","このタイプの盲点を全部持っている相手です。話が通じない代わりに、届かないところに手が届きます。"));
+  cell.appendChild(faceImg(comp));
+  const ct=el("div","nb-t");
+  ct.appendChild(el("div","nb-k","4軸すべて反転"));
+  const v=el("div","nb-v"); v.appendChild(typeLink(comp)); ct.appendChild(v);
+  ct.appendChild(el("div","nb-d","このタイプの盲点を全部持っている相手です。話が通じない代わりに、届かないところに手が届きます。"));
+  cell.appendChild(ct);
   cp.appendChild(cell);
 
   window._t=code;
