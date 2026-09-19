@@ -139,6 +139,18 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(-
 .rconf .rconf-h{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--flag);display:block;margin-bottom:5px}
 .rconf p{margin:0 0 6px;font-size:13.5px;line-height:1.85}
 .rconf p:last-child{margin-bottom:0}
+/* これまでの結果（2026-09-20・ゆずは要望）。再測定で型が変わるのは実際に起きるので、
+   履歴は「前と違う」を隠さずに見せる場所でもある（AG-11 の奏のケース） */
+.hist-row{display:grid;grid-template-columns:86px 74px 1fr;gap:10px;align-items:baseline;width:100%;
+  text-align:left;background:none;border:0;border-bottom:1px solid var(--rule-soft);
+  padding:10px 2px;cursor:pointer;font:inherit;color:var(--ink)}
+.hist-row:hover{background:var(--rule-soft)}
+.hist-row .hd{font-family:var(--mono);font-size:11.5px;color:var(--ink-3)}
+.hist-row .hc{font-family:var(--mono);font-size:12.5px;font-weight:700}
+.hist-row .hc .pa{color:var(--pole-a)}
+.hist-row .hc .pb{color:var(--pole-b)}
+.hist-row .hn{font-family:var(--display);font-weight:700;font-size:14px}
+.hist-row .hq{font-size:11px;color:var(--ink-3);margin-left:6px;font-weight:400;font-family:var(--mono)}
 .scales{border-top:1px solid var(--rule);margin-top:6px}
 .sc{border-bottom:1px solid var(--rule-soft);padding:10px 0;display:grid;grid-template-columns:26px 88px 1fr 44px;gap:10px;align-items:center}
 .sc-r{font-family:var(--mono);font-size:11.5px;color:var(--ink-3)}
@@ -339,6 +351,14 @@ footer{margin-top:56px;border-top:2px solid var(--ink);padding-top:14px;font-fam
     <button class="btn ghost" id="resumeGo">前回の結果を見る</button>
     <span class="hint">この端末に残っている直前の回答から結果を出しなおします</span>
   </p>
+
+  <div id="history" hidden style="margin-top:22px">
+    <h3 style="margin:0 0 4px">これまでの結果</h3>
+    <p class="hint" style="margin:0 0 10px">この端末に残っているぶんだけです。他の端末やブラウザとは共有されません。</p>
+    <p class="note" id="histnote" hidden style="margin:0 0 10px"></p>
+    <div id="histlist"></div>
+    <p style="margin-top:10px"><button class="btn ghost sm" id="histClear">履歴を消す</button></p>
+  </div>
 
   <h3 style="margin-top:34px">16タイプを読む</h3>
   <p style="margin:0 0 4px;font-size:14px;color:var(--ink-2)">コードを入れるか、下から選ぶと、そのタイプの説明だけを読めます。</p>
@@ -922,14 +942,29 @@ function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){ /* プライベ�
 let ansQ = QVER;
 function saveAns(){ lsSet("tts.ans",ans.join("")); lsSet("tts.m",userMBTI||""); lsSet("tts.q",String(QVER)); }
 
+/* これまでの結果（2026-09-20）。直前の1件しか持っていなかったので、
+   再測定しても前回と比べられなかった（AG-11＝奏の型が変わったのに初回の36桁が無い）。
+   端末の中だけ・新しい順・20件まで。?a= で開いた他人の結果は積まない（finish のときだけ）。 */
+function histGet(){
+  try{ const j=JSON.parse(lsGet("tts.hist")||"[]"); return Array.isArray(j)?j:[]; }catch(e){ return []; }
+}
+function histPush(r){
+  const a=ans.join(""), h=histGet();
+  if(h[0] && h[0].a===a) return;              // 同じ回答を出しなおしただけなら積まない
+  h.unshift({t:new Date().toISOString().slice(0,10), a, q:QVER, m:userMBTI||"", c:r.code+"-"+r.suffix});
+  lsSet("tts.hist", JSON.stringify(h.slice(0,20)));
+}
+
 function pushURL(){
   try{ history.replaceState(null,"",shareURL()); }catch(e){ /* sandbox では URL を書き換えられない */ }
 }
 function finish(){
   ansQ = QVER;          // いま答えたのだから現行の文面
+  const r = score(ans);
   saveAns();
+  histPush(r);
   pushURL();
-  renderResult(score(ans));
+  renderResult(r);
   show("result");
 }
 
@@ -1376,6 +1411,48 @@ document.addEventListener("keydown",e=>{
   else if(e.key==="ArrowRight"&&ans[order[idx]]!=null&&idx<Q.length-1){ idx++; renderQ(); }
 });
 
+/* 履歴の描画。前回と型が変わっていたらそれも出す＝
+   「確定」の顔で出した型が測りなおすと変わることがあるのを隠さない（AG-11） */
+function renderHistory(){
+  const h=histGet(), box=$("histlist");
+  if(!h.length) return;
+  $("history").hidden=false;
+  box.innerHTML="";
+  h.forEach(e=>{
+    const t=TYPES[(e.c||"").slice(0,4)];
+    const row=el("button","hist-row"); row.type="button";
+    row.appendChild(el("span","hd", e.t||""));
+    const c=el("span","hc"); c.innerHTML=colorize((e.c||"").slice(0,4))+(e.c||"").slice(4);
+    row.appendChild(c);
+    const n=el("span","hn", t?t.name:"—");
+    if(e.m) n.appendChild(el("span","hq","MBTI "+e.m));
+    if(!e.q) n.appendChild(el("span","hq","設問の版 不明"));
+    row.appendChild(n);
+    row.addEventListener("click",()=>{
+      ans=e.a.split("").map(Number);
+      ansQ = e.q||0;
+      userMBTI = /^[EI][NS][FT][JP]$/.test(e.m||"") ? e.m : "";
+      $("mbti").value = userMBTI;
+      renderResult(score(ans));
+      pushURL();
+      show("result");
+    });
+    box.appendChild(row);
+  });
+  const note=$("histnote");
+  if(h.length>=2 && h[0].c!==h[1].c){
+    note.hidden=false;
+    note.textContent=`前回とちがう型が出ています（${h[1].c} → ${h[0].c}）。`
+      + "同じ人でも、答えるときの気分や言葉の受け取り方で型が入れ替わることがあります。"
+      + "4文字よりも「8つの思考法の順位」のほうが動きにくいので、そちらを見てください。";
+  }else{ note.hidden=true; }
+  $("histClear").onclick=()=>{
+    if(!confirm("この端末に残っている履歴を全部消します。元に戻せません。")) return;
+    try{ localStorage.removeItem("tts.hist"); }catch(e){}
+    $("history").hidden=true;
+  };
+}
+
 /* ---- 起動（URLからの復元）---- */
 buildLikert();
 buildTypeGrid();
@@ -1398,6 +1475,7 @@ buildTypeGrid();
       });
     }
   }
+  if(!a) renderHistory();
   // ?t=CALR は診断を通さずにタイプページを開く。?a= があれば結果を優先する
   const t=(p.get("t")||"").toUpperCase().slice(0,4);
   if(!a && TYPES[t]){ renderType(t); show("typepage"); return; }
