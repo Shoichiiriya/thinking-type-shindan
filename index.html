@@ -531,6 +531,14 @@ const CONF = {
                    // 順位が実質無意味なのに注記が出なかった。25を拾える値まで上げた
 };
 
+/* 設問"文面"の版（2026-09-20）。`v` は採点方式の版で、文面の版はどこにも残っていなかった。
+   AG-7（09-18）でQ14/Q22/Q25/Q30を書き換えたのに `v=2` のままだったので、
+   既存の回答が「どの文面に答えたものか」を判別できなくなった＝過去の回答が静かに比較不能になる。
+   文面を1問でも変えたらここを上げる。`q` の無い ?a= は「版不明（AG-7以前かもしれない）」。
+     1: 2026-09-13（S章・5段階の設問確定版）
+     2: 2026-09-18（AG-7・Q14/Q22/Q25/Q30 の語の重なりを散らした） */
+const QVER = 2;
+
 /* --- 8極 --- */
 const POLES = {
   C:{name:"概念",axis:"材料",side:"a",pair:"P",
@@ -909,12 +917,16 @@ function answer(v){
    「あとでリンクを送って」が成立しない（2026-09-17にβ回答1件が実際に消えた）*/
 function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
 function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){ /* プライベートモード等 */ } }
-function saveAns(){ lsSet("tts.ans",ans.join("")); lsSet("tts.m",userMBTI||""); }
+/* いま画面に出ている回答が、どの文面の版に答えたものか。0＝版不明（q の無い古いURL）。
+   他人の結果URLを開いて再共有したときに版を書き換えてしまわないよう、URLの q をそのまま持ち回る。 */
+let ansQ = QVER;
+function saveAns(){ lsSet("tts.ans",ans.join("")); lsSet("tts.m",userMBTI||""); lsSet("tts.q",String(QVER)); }
 
 function pushURL(){
   try{ history.replaceState(null,"",shareURL()); }catch(e){ /* sandbox では URL を書き換えられない */ }
 }
 function finish(){
+  ansQ = QVER;          // いま答えたのだから現行の文面
   saveAns();
   pushURL();
   renderResult(score(ans));
@@ -1298,6 +1310,7 @@ function shareURL(){
   url.hash="";
   url.searchParams.set("v","2");
   url.searchParams.set("a",ans.join(""));
+  url.searchParams.set("q",String(ansQ));   // どの文面に答えたか。0＝版不明
   if(userMBTI) url.searchParams.set("m",userMBTI); else url.searchParams.delete("m");
   return url.toString();
 }
@@ -1377,6 +1390,7 @@ buildTypeGrid();
       $("resume").hidden=false;
       $("resumeGo").addEventListener("click",()=>{
         ans=sa.split("").map(Number);
+        ansQ = Number(lsGet("tts.q")) || 0;
         if(/^[EI][NS][FT][JP]$/.test(sm)){ userMBTI=sm; $("mbti").value=sm; }
         renderResult(score(ans));
         pushURL();
@@ -1390,6 +1404,7 @@ buildTypeGrid();
   // v=1 は7段階（0〜6）。5段階へ移行したので数字の意味が変わり、再計算できない
   if(a && a.length===Q.length && /^[0-4]+$/.test(a) && p.get("v")!=="1"){
     ans=a.split("").map(Number);
+    ansQ = Number(p.get("q")) || 0;   // q が無い＝AG-7以前かもしれない。上書きしない
     if(/^[EI][NS][FT][JP]$/.test(m)){ userMBTI=m; $("mbti").value=m; }
     renderResult(score(ans));
     show("result");
