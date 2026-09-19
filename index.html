@@ -968,7 +968,7 @@ function renderResult(r){
       if(nb>=2){
         const cand=borderCandidates(r.code,r.alts);
         add(`境界の軸が<b>${nb}つ</b>あり、同じ確かさの候補が<b>${cand.length}型</b>あります`
-          + (cand.length>=16 ? "（16型すべて）。" : `（${cand.join(" / ")}）。`)
+          + (cand.length>=16 ? "（16型すべて）。" : `（${cand.map(c=>`${c} ${TYPES[c].name}`).join("／")}）。`)
           + `<b>この回答では4文字コードは決まっていません。</b>`);
         add("コードと、下に出るタイプ名・4人・長文は、候補のうちの1つを表示しているだけです。先に「8つの思考法の順位」と境界の軸を見てください。");
       }else{
