@@ -813,6 +813,21 @@ function conflict(code,rank){
   return code.split("").map(c=>POLES[c].axis===ax? flip(c):c).join("");
 }
 
+/* シェア文に載せる確度の注記（2026-09-19・β4件目 PALX-F）。
+   ページには rconf / spreadnote が出るのに、外へ出ていく一枚だけが断言していた。
+   型名と二つ名は残す（iriya判断）。拡散するのはシェア文のほうなので、
+   「決まっていません」はページの中だけに置いてはいけない。 */
+function shareCaveat(r){
+  const bits=[];
+  if(r.alts.length>=2){
+    bits.push(`4文字は確定していません（境界${r.alts.length}軸・同確度${borderCandidates(r.code,r.alts).length}型）`);
+  }else if(Object.keys(POLES).every(k=>r.raw[k]>=CONF.HIGH)){
+    bits.push(`8極すべて${CONF.HIGH}以上＝どの設問にもあてはまると答えた形です`);
+  }
+  if(r.spread<CONF.FLAT_SPREAD) bits.push(`8極の差${r.spread}点＝順位も入れ替わりやすい`);
+  return bits.length ? "※"+bits.join("／")+"\n" : "";
+}
+
 /* @test-boundary — ここから上だけを scripts/test-score.mjs が読み込む（DOM非依存） */
 
 /* ============================================================
@@ -1289,7 +1304,7 @@ function shareURL(){
 function updateShare(r){
   const t=TYPES[r.code], sfx=SUFFIX[r.suffix];
   const head = userMBTI ? `${userMBTI} × ${r.code}-${r.suffix}` : `${r.code}-${r.suffix}`;
-  const txt = `#思考法タイプ ${head}\n${t.name}・${sfx.name}\n${t.move}\n\n1位 ${r.rank[0]}${POLES[r.rank[0]].name}（${r.raw[r.rank[0]]}）／抱えている矛盾 ${r.tensions.length}\n${shareURL()}`;
+  const txt = `#思考法タイプ ${head}\n${t.name}・${sfx.name}\n${t.move}\n\n${shareCaveat(r)}1位 ${r.rank[0]}${POLES[r.rank[0]].name}（${r.raw[r.rank[0]]}）／抱えている矛盾 ${r.tensions.length}\n${shareURL()}`;
   $("sharetext").textContent=txt;
   $("toX").href="https://twitter.com/intent/tweet?text="+encodeURIComponent(txt);
 }
