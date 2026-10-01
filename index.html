@@ -179,6 +179,11 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(-
 .rbody{margin:14px 0 0;max-width:62ch}
 .rbody p{margin:0 0 10px;font-size:14.5px;line-height:1.8}
 .rbody p:last-child{margin-bottom:0}
+.rfirst{margin:12px 0 14px;max-width:62ch}
+.rfirst .card-h{margin-bottom:7px}
+.rfirst p{font-size:13.5px;line-height:1.65;margin:0 0 5px}
+.rfirst p:last-child{margin-bottom:0}
+@media (max-width:560px){.pawr-pilot .rhero{flex-direction:row;align-items:center}.pawr-pilot .rface{width:88px;height:88px;flex:none}}
 .sc.a .sc-n,.sc.a .sc-n .c{color:var(--pole-a)}
 .sc.b .sc-n,.sc.b .sc-n .c{color:var(--pole-b)}
 /* 長文（types/<code>.json を遅延ロード）。16タイプ分を同梱すると20万字になるので別ファイル */
@@ -404,6 +409,7 @@ footer{margin-top:56px;border-top:2px solid var(--ink);padding-top:14px;font-fam
   </div>
   <p class="note" id="oldqnote" hidden></p>
   <div class="rconf" id="rconf" hidden></div>
+  <div class="card rfirst" id="rfirst" hidden></div>
   <p class="rmove" id="rmove"></p>
   <div class="rbody" id="rbody"></div>
   <div id="rflags"></div>
@@ -425,9 +431,9 @@ footer{margin-top:56px;border-top:2px solid var(--ink);padding-top:14px;font-fam
     <div id="tbody"></div>
   </div>
 
-  <h3>同じ型の4人</h3>
+  <h3 id="rpeopleHead">同じ型の4人</h3>
   <div class="people" id="rpeople"></div>
-  <p class="note" style="margin-top:10px">この診断の枠組みで読んだ場合の見立てです。本人がそう名乗ったわけではありません。</p>
+  <p class="note" id="rpeopleNote" style="margin-top:10px">この診断の枠組みで読んだ場合の見立てです。本人がそう名乗ったわけではありません。</p>
 
 
   <div id="rlongwrap" hidden>
@@ -680,9 +686,9 @@ const TYPES = {
           body:"現物を細かく見て、その個体だけの特徴を筋道立てて言えます。｜他人には同じに見えるものの差が見える。一点ものを扱う場面で強い。｜つまずくのは、その目を人に渡せないこと。根拠を示せないので、判断が属人的になります。",
           scenes:["現物を見る。写真や説明では判断しない。同じに見えるものの差が見えるまで時間をかける。急がされると判断そのものを保留する。","これは違う、と言える。ただしなぜ違うかを言葉にするのに時間がかかる。判断のほうが説明より先に出るので、独断に見られる。","個体差だと考える。一般的な原因を探すより、この一件の固有の事情を見る。だから同じ問題が繰り返しても、毎回ゼロから見る。"],
           people:[{name:"モーリス・メルロ＝ポンティ",note:"世界を知るのは言葉より先に身体だと考えた。見ることは目が像を受け取るのではなく、身体がその場に入り込んで触れる出来事だとして、知覚を哲学の出発点に置いた。"},{name:"海原雄山（美味しんぼ）",note:"同じに見える素材の差を見抜く。理屈ではなく現物で判断し、違うと分かれば席を立つ。"},{name:"中島誠之助",note:"骨董をひと目見て本物と贋物を分ける。値段の話より先に、その一点がどう作られたかを言う。"},{name:"北大路魯山人",note:"器も料理も、その一点の出来だけを見た。名品として通っているものでも、気に入らなければ使わなかった。"}]},
-  PAWR:{name:"整備士",  move:"不具合を一つずつ調べ、直し方を手順に残す",
-          body:"現物を見て不具合を切り分け、実際に直るかどうかで判断し、直し方を手順として残します。｜再現性のある修復が速い。理屈より先に手が動きます。｜つまずくのは、前例のない壊れ方。手順の外に出ると急に遅くなります。",
-          scenes:["まず分解して構造を見る。説明書より先に中身を開けたがる。どこが壊れているかが分かれば、直し方はもう手の中にある。","言い合いにはしない。実際に動かして見せる。議論の途中で席を立って現物を持ってくるので、話を聞いていないと思われることがある。","直せるかどうかで判断する。直らないと分かった時点で執着せず交換する。前の手がなぜ効いていたのかを振り返ることには興味がない。"],
+  PAWR:{name:"整備士",  move:"状況を確かめ、原因を分け、次に使える対処を残す",
+          body:"困りごとが起きたら、まず実際に何が起きているかを確かめ、原因を分けて考える傾向です。｜得意なのは、曖昧な不調を試せる問題に変えること。試したことを残せば、次の人にも役立ちます。｜気をつけたいのは、目の前の問題を直す前に、相手が何を解決したいのかを聞くことです。",
+          scenes:["新しい仕事なら、まず実際の流れを一度たどる。どこで迷うかを見てから、確認する点を決める。","意見が割れたら、画面や作業を一緒に見る。その前に、相手が原因の特定を求めているのか、進め方を相談したいのかを聞く。","前の手順が効かなければ、同じ確認を重ねる前に目的や使う人が変わっていないかを見る。"],
           people:[{name:"チャールズ・サンダース・パース",note:"目の前の異常から「たぶんこれが原因だ」と当てにいく推論を、アブダクションと名づけて方法にした。正しさを証明してから動くのではなく、当たりをつけて試し、外れたら次の仮説へ移る。"},{name:"パズー（天空の城ラピュタ）",note:"機械を分解して直す。手順を持っているので迷いがなく、飛行石の異常にも真っ先に手が伸びる。"},{name:"本田宗一郎",note:"図面より先に現物を触った。直し方を個人の勘で終わらせず、作業として書き残して工場に配った。"},{name:"大野耐一",note:"「なぜ」を五回繰り返して原因を一点まで絞る手順を作り、誰がやっても同じ答えに着く形にした。"}]},
   PAWX:{name:"職人",    move:"目の前の素材を確かめ、その状態に合わせて作る",
           body:"手の感覚で素材の状態を見て、その一点に合わせて仕上げます。判断は出来上がりが良いかどうか。｜同じ材料が二つない場面で強い。言葉にできない差を扱えます。｜つまずくのは、教えられないこと。自分の手は動くのに、他人の手は動きません。",
@@ -973,6 +979,7 @@ function finish(){
 /* ---- 結果 ---- */
 function renderResult(r){
   const t=TYPES[r.code], sfx=SUFFIX[r.suffix];
+  $("result").classList.toggle("pawr-pilot",r.code==="PAWR");
   const oldNote=$("oldqnote");
   oldNote.hidden=ansQ===QVER;
   if(!oldNote.hidden) oldNote.textContent = "これは以前の設問への回答です。現在の設問とは文面が違うため、結果を比べるときは注意してください。";
@@ -1027,6 +1034,22 @@ function renderResult(r){
         add("4文字コードよりも、下の「8つの考え方の出やすさ」と「両方にあてはまった軸」を見てください。");
       }
     }
+  }
+
+  const first=$("rfirst"); first.innerHTML=""; first.hidden=r.code!=="PAWR";
+  if(!first.hidden){
+    first.appendChild(el("div","card-h","まず、あなたの回答"));
+    if(r.spread===0){
+      first.appendChild(el("p",null,"8つの考え方がすべて同じ点数です。型名よりも、各項目の回答を見てください。"));
+    }else{
+      const plain={C:"知っている考え方から考える",P:"目の前で起きたことから考える",
+        A:"部分に分けて考える",S:"つながりから考える",L:"筋が通るかで判断する",
+        W:"役立つかで判断する",R:"次にも使える形にする",X:"その場に合わせる"};
+      const picked=ks=>ks.map(k=>`${plain[k]}（${r.raw[k]}）`).join("／");
+      first.appendChild(el("p",null,"比較的あてはまった考え方："+picked(r.rank.slice(0,2))));
+      first.appendChild(el("p",null,"比較的あてはまらなかった考え方："+picked(r.rank.slice(-2).reverse())));
+    }
+    first.appendChild(el("p","note","点数は回答の傾向です。能力の高さを表すものではありません。"));
   }
 
   const flags=$("rflags"); flags.innerHTML="";
@@ -1125,6 +1148,9 @@ function renderResult(r){
   $("confV").innerHTML=""; $("confV").appendChild(typeLink(conf));
   $("compFace").src=faceURL(comp); $("confFace").src=faceURL(conf);
 
+  const longWrap=$("rlongwrap");
+  if(r.code==="PAWR") $("result").insertBefore(longWrap,$("rpeopleHead"));
+  else $("rpeopleNote").after(longWrap);
   setupLong("rlongwrap","rlongbar","rlong",r.code);
 
   updateShare(r);
@@ -1172,9 +1198,9 @@ function setupLong(wrapId, barId, boxId, code){
   box.innerHTML=""; bar.innerHTML="";
   wrap.hidden = !LONG_READY.includes(code);
   if(wrap.hidden) return;
-  const LABEL="この型を詳しく読む（約8,000字）";
+  const LABEL=code==="PAWR" ? "この型を詳しく読む（約3,000字）" : "この型を詳しく読む（約8,000字）";
   const b=el("button","btn ghost sm",LABEL);
-  const note=el("p","note","9章あります。読み切るのに15〜20分かかります。枠で囲んだ「場面」は具体例なので、読み飛ばしても筋は通ります。");
+  const note=el("p","note",code==="PAWR" ? "5章あります。まず気になる章だけ読んでも大丈夫です。" : "9章あります。読み切るのに15〜20分かかります。枠で囲んだ「場面」は具体例なので、読み飛ばしても筋は通ります。");
   note.style.margin="8px 0 0";
   b.onclick=async()=>{
     b.disabled=true; b.textContent="読み込み中…";
